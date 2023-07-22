@@ -1,0 +1,151 @@
+#+TITLE: Parton Distribution Functions
+#+AUTHOR: Alexander Huss
+#+STARTUP: showall
+#+EXCLUDE_TAGS: noexport
+#+LATEX_HEADER: \usepackage[a4paper]{geometry}
+#+LATEX_HEADER: \usepackage{mathtools}
+
+
+* Introduction
+We will call the [[https://lhapdf.hepforge.org/][LHAPDF]] library through python to evaluate parton distribution functions and play around with them a bit.
+
+* Evaluating PDFs
+  Let's have a look at one specific PDF set =PDF4LHC21_40=
+
+#+NAME: lhapdf_xfx
+#+HEADER: :var q=100 qlog=1
+#+begin_src python :results silent
+import lhapdf
+import numpy as np
+
+lhapdf.setVerbosity(0)
+pdf = lhapdf.mkPDF("PDF4LHC21_40", 0)
+if qlog:
+    xs = [x for x in np.logspace(-5, 0, 50)]
+else:
+    xs = [x for x in np.linspace(0, 1, 50)]
+res = np.empty([len(xs),6])
+for ix, x in enumerate(xs):
+    fac = 1. #1./x
+    res[ix,0] = x
+    res[ix,1] = q
+    res[ix,2] = fac*(pdf.xfxQ(2, x, q) - pdf.xfxQ(-2, x, q))  # valence up-quark
+    res[ix,3] = fac*(pdf.xfxQ(1, x, q) - pdf.xfxQ(-1, x, q))  # valence down-quark
+    res[ix,4] = fac*(pdf.xfxQ(0, x, q))  # gluon (or `21`)
+    res[ix,5] = fac*(
+         2.*pdf.xfxQ(-2, x, q)
+        +2.*pdf.xfxQ(-1, x, q)
+        +pdf.xfxQ(3, x, q)+pdf.xfxQ(-3, x, q)
+        +pdf.xfxQ(4, x, q)+pdf.xfxQ(-4, x, q)
+        +pdf.xfxQ(5, x, q)+pdf.xfxQ(-5, x, q)
+    )  # sum over all se quarks
+return res
+#+end_src
+
+#+begin_src gnuplot :var data=lhapdf_xfx(10,1) :file pdf_xfx.png
+set log x
+set xlabel "x"
+unset log y
+#set yrange [1e-4:1e3]
+set yrange [0:1]
+set ylabel "x f(x)"
+plot data  \
+     u 1:3 w lp t "valence up",  \
+  "" u 1:4 w lp t "valence down",  \
+  "" u 1:($5*0.01) w lp t "gluon  0.01",  \
+  "" u 1:($6*0.01) w lp t "see quarks 0.01"
+#+end_src
+
+#+RESULTS:
+[[file:pdf_xfx.png]]
+
+
+* The quantum numbers of the proton
+The qunatum numbers of the proton are determined by the valence quarks, p=(uud).
+Given that PDFs are /number densities/ for the constituent partons, the following flavour sum rules hold:
+\begin{align}
+  \int_0^1\mathrm{d}x \Bigl(
+    f_{\mathrm{u}\vert\mathrm{p}}(x)
+  - f_{\bar{\mathrm{u}}\vert\mathrm{p}}(x)
+  \Bigr)
+  &= 2, &
+  \int_0^1\mathrm{d}x \Bigl(
+    f_{\mathrm{d}\vert\mathrm{p}}(x)
+  - f_{\bar{\mathrm{d}}\vert\mathrm{p}}(x)
+  \Bigr)
+  &= 1,
+  \\
+  \int_0^1\mathrm{d}x \Bigl(
+    f_{\mathrm{q}\vert\mathrm{p}}(x)
+  - f_{\bar{\mathrm{q}}\vert\mathrm{p}}(x)
+  \Bigr)
+  &= 0 \quad \forall q \notin \{\mathrm{u},\,\mathrm{d}\}
+\end{align}
+Let's see if these hold for one of the global PDF sets:
+#+HEADER: :var q=100
+#+begin_src python :results value :exports both
+import lhapdf
+import math
+import scipy
+lhapdf.setVerbosity(0)
+pdf = lhapdf.mkPDF("PDF4LHC21_40", 0)
+res = list()
+for id,label in [(1,"d"),(2,"u"),(3,"s"),(4,"c"),(5,"b")]:
+    int_res = scipy.integrate.quad(lambda x : (pdf.xfxQ(id, x, q)-pdf.xfxQ(-id, x, q))/x, 0, 1, limit=1000, epsrel=1e-4)
+    #print(int_res)
+    res.append( (label, int_res[0]) )
+return res
+#+end_src
+
+#+RESULTS:
+| d |     0.9895191932413574 |
+| u |     1.9514579315015579 |
+| s |    0.01509780263458491 |
+| c |  7.592269630105822e-05 |
+| b | -0.0008936063440324684 |
+
+* Momentum sum rules
+The parton $a$ carries a momentum fraction $x_a$ of the parent hadron, $p_a^\mu=x_a\,P^\mu$.
+Therefore, the momentum density associated witht that parton is given by $x_a\,f_{a\vert H}(x_a).
+Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a /momentum sum rule/ (in $\overline{\text{MS}}$):
+\begin{align}
+  \sum_a \int_0^1 \mathrm{d}x_a \; x_a\,f_{a\vert H}(x_a)
+  &= 1
+\end{align}
+
+Let's see how the momenta are distributed accross different flavours
+#+HEADER: :var q=100
+#+begin_src python :results value :exports both
+import lhapdf
+import math
+import scipy
+lhapdf.setVerbosity(0)
+pdf = lhapdf.mkPDF("PDF4LHC21_40", 0)
+res = list()
+int_sum = [0.,0.]
+for id,label in [(-5,"bb"),(-4,"cb"),(-3,"sb"),(-2,"ub"),(-1,"db"),(0,"g"),(1,"d"),(2,"u"),(3,"s"),(4,"c"),(5,"b")]:
+    int_res = scipy.integrate.quad(lambda x : pdf.xfxQ(id, x, q), 0, 1, limit=100)
+    int_sum[0] += int_res[0]
+    int_sum[1] += int_res[1]**2
+    #print(int_res)
+    res.append( (label, "{:.0f}%".format(int_res[0]*100.)) )
+res.append( ("SUM", "{:.0f}%".format(int_sum[0]*100.)) )
+return res
+#+end_src
+
+#+RESULTS:
+| bb  |   1% |
+| cb  |   2% |
+| sb  |   3% |
+| ub  |   4% |
+| db  |   4% |
+| g   |  47% |
+| d   |  11% |
+| u   |  22% |
+| s   |   3% |
+| c   |   2% |
+| b   |   1% |
+| SUM | 100% |
+
+So the gluon actually carries almost $50\%$ of the proton's momentum!
+The up quark, with $\sim20\%$, has the second largect contribution, followed by the down-quark $\sim$half the size of the up (which makes sense as p=(uud)).
