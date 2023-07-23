@@ -1,7 +1,6 @@
 #+TITLE: Parton Distribution Functions
 #+AUTHOR: Alexander Huss
 #+STARTUP: showall
-#+EXCLUDE_TAGS: noexport
 #+LATEX_HEADER: \usepackage[a4paper]{geometry}
 #+LATEX_HEADER: \usepackage{mathtools}
 
@@ -42,18 +41,17 @@ for ix, x in enumerate(xs):
 return res
 #+end_src
 
-#+begin_src gnuplot :var data=lhapdf_xfx(10,1) :file pdf_xfx.png
+#+begin_src gnuplot :var data=lhapdf_xfx(100,1) :var fac=0.01 :file pdf_xfx.png
 set log x
 set xlabel "x"
 unset log y
-#set yrange [1e-4:1e3]
 set yrange [0:1]
 set ylabel "x f(x)"
 plot data  \
      u 1:3 w lp t "valence up",  \
   "" u 1:4 w lp t "valence down",  \
-  "" u 1:($5*0.01) w lp t "gluon  0.01",  \
-  "" u 1:($6*0.01) w lp t "see quarks 0.01"
+  "" u 1:($5*fac) w lp t "gluon × ".fac,  \
+  "" u 1:($6*fac) w lp t "see quarks × ".fac
 #+end_src
 
 #+RESULTS:
