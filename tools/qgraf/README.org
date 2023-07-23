@@ -1,0 +1,1 @@
+The example files in this folder require the Feynman diagram generator [[https://cfif.ist.utl.pt/~paulo/qgraf.html][qgraf]] to be installed on your system.
