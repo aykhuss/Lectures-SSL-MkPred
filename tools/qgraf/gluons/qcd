@@ -1,0 +1,24 @@
+﻿
+%  simplified QCD with neither flavour nor colour indices
+
+
+%  propagators
+
+  [ quark, antiquark, - ]
+
+  [ gluon, gluon, + ]
+
+  [ ghost, antighost, - ]
+
+
+
+%  vertices
+
+  [ antiquark, quark, gluon ]
+
+  [ gluon, gluon, gluon ]
+
+  [ gluon, gluon, gluon, gluon ]
+
+  [ antighost, ghost, gluon ]
+

@@ -1,0 +1,20 @@
+
+ config= noblanks ;
+
+ output= 'qlist.out' ;
+
+ style= 'custom.sty' ;
+
+ model= 'qcd' ;
+
+ in= gluon, gluon ;
+
+ out= &out& ;
+
+ loops= &loops& ;
+
+ loop_momentum= ;
+
+ options=  ;
+
+

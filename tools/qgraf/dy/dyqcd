@@ -1,0 +1,36 @@
+﻿
+%  simplified QCD with leptons and NC gauge bosons
+
+
+%  propagators
+
+  [ quark, antiquark, - ]
+
+  [ gluon, gluon, + ]
+
+  [ ghost, antighost, - ]
+
+  [ l_minus, l_plus, - ]
+
+  [ photon, photon, + ]
+
+  [ Z, Z, + ]
+
+
+%  vertices
+
+  [ antiquark, quark, gluon ]
+
+  [ gluon, gluon, gluon ]
+
+  [ gluon, gluon, gluon, gluon ]
+
+  [ antighost, ghost, gluon ]
+
+  [ antiquark, quark, photon ]
+
+  [ antiquark, quark, Z ]
+
+  [ l_plus, l_minus, photon ]
+
+  [ l_plus, l_minus, Z ]

@@ -1,0 +1,20 @@
+
+ config= noblanks ;
+
+ output= 'qlist.out' ;
+
+ style= 'custom.sty' ;
+
+ model= 'dyqcd' ;
+
+ in= quark, antiquark ;
+
+ out= l_plus, l_minus ;
+
+ loops= 0 ;
+
+ loop_momentum= ;
+
+ options=  ;
+
+
