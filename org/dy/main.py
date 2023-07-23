@@ -108,7 +108,10 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
 if __name__ == "__main__":
     Ecm = 8e3
     for Yll in np.linspace(-3.6, 3.6, 100):
-        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100.)
-        print("{:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
+        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100., epsrel=1e-3)
+        print("#Yll {:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
+    for Mll in np.linspace(10, 200, 200):
+        dsig = scipy.integrate.quad(lambda Y: diff_cross(Ecm,Mll,Y), -3.6, +3.6, epsrel=1e-3)
+        print("#Mll {:e} {:e} {:e}".format(Mll,dsig[0],dsig[1]))
     tot_cross = scipy.integrate.nquad(lambda M,Y: diff_cross(Ecm,M,Y), [[80.,100.],[-3.6,+3.6]], opts={'epsrel':1e-3})
-    print("total xs = {} pb".format(tot_cross))
+    print("#total {} pb".format(tot_cross[0]))

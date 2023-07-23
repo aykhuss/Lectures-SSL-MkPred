@@ -225,12 +225,76 @@ import scipy
 if __name__ == "__main__":
     Ecm = 8e3
     for Yll in np.linspace(-3.6, 3.6, 100):
-        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100.)
-        print("{:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
+        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100., epsrel=1e-3)
+        print("#Yll {:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
+    for Mll in np.linspace(10, 200, 200):
+        dsig = scipy.integrate.quad(lambda Y: diff_cross(Ecm,Mll,Y), -3.6, +3.6, epsrel=1e-3)
+        print("#Mll {:e} {:e} {:e}".format(Mll,dsig[0],dsig[1]))
     tot_cross = scipy.integrate.nquad(lambda M,Y: diff_cross(Ecm,M,Y), [[80.,100.],[-3.6,+3.6]], opts={'epsrel':1e-3})
-    print("total xs = {} pb".format(tot_cross))
+    print("#total {} pb".format(tot_cross[0]))
 #+end_src
+
 by using the ~tangle~ command
 #+begin_src elisp :results silent
 (org-babel-tangle)
 #+end_src
+
+** Comparison to data
+There is a recent ATLAS measurement [[https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CONFNOTES/ATLAS-CONF-2023-013/][ATLAS-CONF-2023-013]] that is inclusive in the lepton kinematics and thus suitable for performing a simple comparison here.
+Let's execute our code that we exported above and save the output to a file
+#+begin_src shell : :results silent
+python main.py > DY.out
+#+end_src
+The total cross section that ATLAS reports in that paper is
+\begin{align}
+  \sigma_\mathrm{Z}
+  &=
+  1055.3 \;\pm 0.7 \,\text{(stat.)} \;\pm 2.2 \,\text{(syst.)} \;\pm 19.0 \,\text{(lumi.)} \,\mathrm{pb}
+\end{align}
+Our LO implementation gives us
+#+begin_src shell :exports results :results verbatim
+grep "^#total" DY.out
+#+end_src
+
+#+RESULTS:
+: #total 897.1018242299992 pb
+which is in the right ballpark.
+However, a quantitative assessment is more tricky since we don't have any uncertainty estimate on our theory predictions.
+For calculations in QCD, one should always consider a LO prediction to only provide an order-of-magnitude estimate for a cross section.
+
+We can also use the generated data to compare the rapidity distribution presented in the ATLAS paper.
+Unfortunately, this is still a conference note so there's no public data available on [[https://www.hepdata.net/][HEPData]].
+Fortunately, there are tools like [[https://arxiv.org/abs/0710.2896][EasyNData]] that allows us to extract data out of plots :)
+The rapidity distribution with the relative errors is in the file =ATLAS.dat= and we can plot it against our prediction:
+#+begin_src gnuplot :file Yll.png
+unset log x
+set xlabel '|Y_{ℓℓ}|'
+set xrange [0:3.6]
+unset log y
+set ylabel 'dσ / d|Y_{ℓℓ}| [pb]'
+set yrange [*:*]
+set style fill pattern 2
+#> factor two because of y_Z -> |Y_Z|
+plot "< awk '$1!~/^#/{val=$3;low=$3*(1-$4*1e-2);upp=$3*(1+$4*1e-2);print $1,val,low,upp; print $2,val,low,upp}' ATLAS.dat" u 1:3:4 w filledcurves ls 1 t "ATLAS",  \
+     "" u 1:2 w l ls 1 notitle,  \
+     "< awk '$1~/^#Yll/{print $2,2.*$3}' DY.out" u 1:2 w lp t 'LO'
+#+end_src
+
+#+RESULTS:
+[[file:Yll.png]]
+We see that a similar offset as in the total cross section but it appears to be largely a normalization issue and the /shape/ itself is rather well described.
+
+We can also have a look at the invariant-mass distribution (no ATLAS result for it in the paper).
+#+begin_src gnuplot :file Mll.png
+unset log x
+set xlabel 'M_{ℓℓ} [GeV]'
+set xrange [*:*]
+set log y
+set ylabel 'dσ / dM_{ℓℓ} [pb/GeV]'
+set yrange [*:*]
+plot "< awk '$1~/^#Mll/{print $2,$3}' DY.out" u 1:2 w lp t 'LO'
+#+end_src
+
+#+RESULTS:
+[[file:Mll.png]]
+We can see a similar picture of the photon pole and the Z-boson resonance as in the lepton collider example.

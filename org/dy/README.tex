@@ -1,4 +1,4 @@
-% Created 2023-07-19 Wed 09:56
+% Created 2023-07-23 Sun 15:02
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,15 +33,15 @@
 
 
 \section{Introduction}
-\label{sec:org5c52293}
+\label{sec:org2f6805c}
 We will implement the process \(\mathrm{p}\mathrm{p} \to \ell\bar{\ell}\).
 This gives us access to a simple hadron-collider process that constitutes a ``Standard Candle'' at the LHC and has a wide range of applications.
 
 \section{Cross section}
-\label{sec:orgd2aa8de}
+\label{sec:orgfe3ca25}
 
 \subsection{Partonic cross section}
-\label{sec:orge732d29}
+\label{sec:orgf79f6e7}
 
 The squared Matrix Element is essentially the same as the one we looked at in the \(\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-\) case.
 To make life a little easier for us, we integrated out the kinematics of the \(\mathrm{Z}/\gamma^*\to\ell\bar{\ell}\) system.
@@ -89,7 +89,7 @@ that we can use to assemble the \emph{partonic} cross section:
 \end{align}
 
 \subsubsection{Implementation}
-\label{sec:org1183aa5}
+\label{sec:org5c49de5}
 We'll use a simple class to save and retrieve Standard Model parameters including some convenience functions.
 We next implement the different structure functions (we need the additional quark id \texttt{qid} to distinguish up-type from down-type quarks as they have different couplings to the Z boson.
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -117,7 +117,7 @@ def cross_partonic(shat: float, qid: int, par=PARAM) -> float:
 \end{minted}
 
 \subsection{Hadronic cross section and lepton-pair observables}
-\label{sec:orgbd14008}
+\label{sec:orge0b1fcc}
 The hadronic cross section is obtained by convoluting the partonic one with the parton distribution functions:
 \begin{align}
   \sigma_{A B \to \ell\bar{\ell}} (P_A, P_B)
@@ -144,7 +144,7 @@ Being differential in these two observables, we're left with no more integration
 \end{align}
 
 \subsubsection{Implementation}
-\label{sec:org85500c7}
+\label{sec:orge063784}
 Let's implement the hadronic differential cross section
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
@@ -153,18 +153,18 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
     s = Ecm**2
     shat = xa*xb*s
     lum_dn = (
-         par.pdf.xfxQ(+1, xa, Mll)*par.pdf.xfxQ(-1, xb, Mll)
-        +par.pdf.xfxQ(+3, xa, Mll)*par.pdf.xfxQ(-3, xb, Mll)
-        +par.pdf.xfxQ(+5, xa, Mll)*par.pdf.xfxQ(-5, xb, Mll)
-        +par.pdf.xfxQ(-1, xa, Mll)*par.pdf.xfxQ(+1, xb, Mll)
-        +par.pdf.xfxQ(-3, xa, Mll)*par.pdf.xfxQ(+3, xb, Mll)
-        +par.pdf.xfxQ(-5, xa, Mll)*par.pdf.xfxQ(+5, xb, Mll)
+          par.pdf.xfxQ(+1, xa, Mll) * par.pdf.xfxQ(-1, xb, Mll)  # (d,dbar)
+        + par.pdf.xfxQ(+3, xa, Mll) * par.pdf.xfxQ(-3, xb, Mll)  # (s,sbar)
+        + par.pdf.xfxQ(+5, xa, Mll) * par.pdf.xfxQ(-5, xb, Mll)  # (b,bbar)
+        + par.pdf.xfxQ(-1, xa, Mll) * par.pdf.xfxQ(+1, xb, Mll)  # (dbar,d)
+        + par.pdf.xfxQ(-3, xa, Mll) * par.pdf.xfxQ(+3, xb, Mll)  # (sbar,s)
+        + par.pdf.xfxQ(-5, xa, Mll) * par.pdf.xfxQ(+5, xb, Mll)  # (bbar,b)
         ) / (xa*xb)
     lum_up = (
-         par.pdf.xfxQ(+2, xa, Mll)*par.pdf.xfxQ(-2, xb, Mll)
-        +par.pdf.xfxQ(+4, xa, Mll)*par.pdf.xfxQ(-4, xb, Mll)
-        +par.pdf.xfxQ(-2, xa, Mll)*par.pdf.xfxQ(+2, xb, Mll)
-        +par.pdf.xfxQ(-4, xa, Mll)*par.pdf.xfxQ(+4, xb, Mll)
+          par.pdf.xfxQ(+2, xa, Mll) * par.pdf.xfxQ(-2, xb, Mll)  # (u,ubar)
+        + par.pdf.xfxQ(+4, xa, Mll) * par.pdf.xfxQ(-4, xb, Mll)  # (c,cbar)
+        + par.pdf.xfxQ(-2, xa, Mll) * par.pdf.xfxQ(+2, xb, Mll)  # (ubar,u)
+        + par.pdf.xfxQ(-4, xa, Mll) * par.pdf.xfxQ(+4, xb, Mll)  # (cbar,c)
         ) / (xa*xb)
     return par.GeVpb * (2.*Mll/Ecm**2) * (
          lum_dn * cross_partonic(shat, 1, par)
@@ -175,10 +175,10 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
 
 
 \section{Playground}
-\label{sec:org25ef63e}
+\label{sec:orge104234}
 
 \subsection{Export source code}
-\label{sec:orgee9ec0f}
+\label{sec:org4dd4354}
 We can export the python source code to a file \texttt{main.py}:
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 import lhapdf
@@ -270,18 +270,18 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
     s = Ecm**2
     shat = xa*xb*s
     lum_dn = (
-         par.pdf.xfxQ(+1, xa, Mll)*par.pdf.xfxQ(-1, xb, Mll)
-        +par.pdf.xfxQ(+3, xa, Mll)*par.pdf.xfxQ(-3, xb, Mll)
-        +par.pdf.xfxQ(+5, xa, Mll)*par.pdf.xfxQ(-5, xb, Mll)
-        +par.pdf.xfxQ(-1, xa, Mll)*par.pdf.xfxQ(+1, xb, Mll)
-        +par.pdf.xfxQ(-3, xa, Mll)*par.pdf.xfxQ(+3, xb, Mll)
-        +par.pdf.xfxQ(-5, xa, Mll)*par.pdf.xfxQ(+5, xb, Mll)
+          par.pdf.xfxQ(+1, xa, Mll) * par.pdf.xfxQ(-1, xb, Mll)  # (d,dbar)
+        + par.pdf.xfxQ(+3, xa, Mll) * par.pdf.xfxQ(-3, xb, Mll)  # (s,sbar)
+        + par.pdf.xfxQ(+5, xa, Mll) * par.pdf.xfxQ(-5, xb, Mll)  # (b,bbar)
+        + par.pdf.xfxQ(-1, xa, Mll) * par.pdf.xfxQ(+1, xb, Mll)  # (dbar,d)
+        + par.pdf.xfxQ(-3, xa, Mll) * par.pdf.xfxQ(+3, xb, Mll)  # (sbar,s)
+        + par.pdf.xfxQ(-5, xa, Mll) * par.pdf.xfxQ(+5, xb, Mll)  # (bbar,b)
         ) / (xa*xb)
     lum_up = (
-         par.pdf.xfxQ(+2, xa, Mll)*par.pdf.xfxQ(-2, xb, Mll)
-        +par.pdf.xfxQ(+4, xa, Mll)*par.pdf.xfxQ(-4, xb, Mll)
-        +par.pdf.xfxQ(-2, xa, Mll)*par.pdf.xfxQ(+2, xb, Mll)
-        +par.pdf.xfxQ(-4, xa, Mll)*par.pdf.xfxQ(+4, xb, Mll)
+          par.pdf.xfxQ(+2, xa, Mll) * par.pdf.xfxQ(-2, xb, Mll)  # (u,ubar)
+        + par.pdf.xfxQ(+4, xa, Mll) * par.pdf.xfxQ(-4, xb, Mll)  # (c,cbar)
+        + par.pdf.xfxQ(-2, xa, Mll) * par.pdf.xfxQ(+2, xb, Mll)  # (ubar,u)
+        + par.pdf.xfxQ(-4, xa, Mll) * par.pdf.xfxQ(+4, xb, Mll)  # (cbar,c)
         ) / (xa*xb)
     return par.GeVpb * (2.*Mll/Ecm**2) * (
          lum_dn * cross_partonic(shat, 1, par)
@@ -290,13 +290,54 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
 if __name__ == "__main__":
     Ecm = 8e3
     for Yll in np.linspace(-3.6, 3.6, 100):
-        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100.)
-        print("{:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
-    tot_cross = scipy.integrate.dblquad(lambda M,Y: diff_cross(Ecm,M,Y), -3.6, +3.6, lambda M: 80., lambda M: 100. )
-    print("total xs = {} pb".format(tot_cross))
+        dsig = scipy.integrate.quad(lambda M: diff_cross(Ecm,M,Yll), 80., 100., epsrel=1e-3)
+        print("#Yll {:e} {:e} {:e}".format(Yll,dsig[0],dsig[1]))
+    for Mll in np.linspace(10, 200, 200):
+        dsig = scipy.integrate.quad(lambda Y: diff_cross(Ecm,Mll,Y), -3.6, +3.6, epsrel=1e-3)
+        print("#Mll {:e} {:e} {:e}".format(Mll,dsig[0],dsig[1]))
+    tot_cross = scipy.integrate.nquad(lambda M,Y: diff_cross(Ecm,M,Y), [[80.,100.],[-3.6,+3.6]], opts={'epsrel':1e-3})
+    print("#total {} pb".format(tot_cross[0]))
 \end{minted}
+
 by using the \texttt{tangle} command
 \begin{minted}[frame=lines,fontsize=\scriptsize]{elisp}
 (org-babel-tangle)
 \end{minted}
+
+\subsection{Comparison to data}
+\label{sec:org9cca00b}
+There is a recent ATLAS measurement \href{https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CONFNOTES/ATLAS-CONF-2023-013/}{ATLAS-CONF-2023-013} that is inclusive in the lepton kinematics and thus suitable for performing a simple comparison here.
+Let's execute our code that we exported above and save the output to a file
+\begin{minted}[frame=lines,fontsize=\scriptsize]{shell}
+python main.py > DY.out
+\end{minted}
+The total cross section that ATLAS reports in that paper is
+\begin{align}
+  \sigma_\mathrm{Z}
+  &=
+  1055.3 \;\pm 0.7 \,\text{(stat.)} \;\pm 2.2 \,\text{(syst.)} \;\pm 19.0 \,\text{(lumi.)} \,\mathrm{pb}
+\end{align}
+Our LO implementation gives us
+\begin{verbatim}
+#total 897.1018242299992 pb
+\end{verbatim}
+
+which is in the right ballpark.
+However, a quantitative assessment is more tricky since we don't have any uncertainty estimate on our theory predictions.
+For calculations in QCD, one should always consider a LO prediction to only provide an order-of-magnitude estimate for a cross section.
+
+We can also use the generated data to compare the rapidity distribution presented in the ATLAS paper.
+Unfortunately, this is still a conference note so there's no public data available on \href{https://www.hepdata.net/}{HEPData}.
+Fortunately, there are tools like \href{https://arxiv.org/abs/0710.2896}{EasyNData} that allows us to extract data out of plots :)
+The rapidity distribution with the relative errors is in the file \texttt{ATLAS.dat} and we can plot it against our prediction:
+\begin{center}
+\includegraphics[width=.9\linewidth]{Yll.png}
+\end{center}
+We see that a similar offset as in the total cross section but it appears to be largely a normalization issue and the \emph{shape} itself is rather well described.
+
+We can also have a look at the invariant-mass distribution (no ATLAS result for it in the paper).
+\begin{center}
+\includegraphics[width=.9\linewidth]{Mll.png}
+\end{center}
+We can see a similar picture of the photon pole and the Z-boson resonance as in the lepton collider example.
 \end{document}
