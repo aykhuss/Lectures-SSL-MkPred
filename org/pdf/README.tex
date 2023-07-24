@@ -1,4 +1,4 @@
-% Created 2023-07-22 Sat 15:09
+% Created 2023-07-24 Mon 16:29
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
  pdftitle={Parton Distribution Functions},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 28.2 (Org mode 9.6.1)}, 
+ pdfcreator={Emacs 28.2 (Org mode 9.7)}, 
  pdflang={English}}
 \begin{document}
 
@@ -33,11 +33,11 @@
 
 
 \section{Introduction}
-\label{sec:orgdfdd831}
+\label{sec:orga02b098}
 We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library through python to evaluate parton distribution functions and play around with them a bit.
 
 \section{Evaluating PDFs}
-\label{sec:orgb667dd7}
+\label{sec:orga334cac}
 Let's have a look at one specific PDF set \texttt{PDF4LHC21\_40}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -64,7 +64,7 @@ for ix, x in enumerate(xs):
         +pdf.xfxQ(3, x, q)+pdf.xfxQ(-3, x, q)
         +pdf.xfxQ(4, x, q)+pdf.xfxQ(-4, x, q)
         +pdf.xfxQ(5, x, q)+pdf.xfxQ(-5, x, q)
-    )  # sum over all se quarks
+    )  # sum over all see quarks
 return res
 \end{minted}
 
@@ -74,8 +74,8 @@ return res
 
 
 \section{The quantum numbers of the proton}
-\label{sec:orgcb00eb9}
-The qunatum numbers of the proton are determined by the valence quarks, p=(uud).
+\label{sec:org1a67141}
+The quantum numbers of the proton are determined by the valence quarks, p=(uud).
 Given that PDFs are \emph{number densities} for the constituent partons, the following flavour sum rules hold:
 \begin{align}
   \int_0^1\mathrm{d}x \Bigl(
@@ -104,7 +104,7 @@ lhapdf.setVerbosity(0)
 pdf = lhapdf.mkPDF("PDF4LHC21_40", 0)
 res = list()
 for id,label in [(1,"d"),(2,"u"),(3,"s"),(4,"c"),(5,"b")]:
-    int_res = scipy.integrate.quad(lambda x : (pdf.xfxQ(id, x, q)-pdf.xfxQ(-id, x, q))/x, 0, 1, limit=1000, epsrel=1e-4)
+    int_res = scipy.integrate.quad(lambda x : (pdf.xfxQ(id, x, q)-pdf.xfxQ(-id, x, q))/x, 1e-6, 1, limit=100, epsrel=1e-3)
     #print(int_res)
     res.append( (label, int_res[0]) )
 return res
@@ -112,25 +112,25 @@ return res
 
 \begin{center}
 \begin{tabular}{lr}
-d & 0.9895191932413574\\[0pt]
-u & 1.9514579315015579\\[0pt]
-s & 0.01509780263458491\\[0pt]
-c & 7.592269630105822e-05\\[0pt]
-b & -0.0008936063440324684\\[0pt]
+d & 0.9867274422876251\\[0pt]
+u & 1.9924213767549757\\[0pt]
+s & 0.0037080323432484596\\[0pt]
+c & -0.00018756880668407142\\[0pt]
+b & -8.819432616743546e-05\\[0pt]
 \end{tabular}
 \end{center}
 
 \section{Momentum sum rules}
-\label{sec:org1ed66b7}
+\label{sec:orgdc9cf80}
 The parton \(a\) carries a momentum fraction \(x_a\) of the parent hadron, \(p_a^\mu=x_a\,P^\mu\).
-Therefore, the momentum density associated witht that parton is given by \$x\textsubscript{a$\backslash$,f}\textsubscript{a\(\vert{}\) H}(x\textsubscript{a}).
+Therefore, the momentum density associated with that parton is given by \$x\textsubscript{a$\backslash$,f}\textsubscript{a\(\vert{}\) H}(x\textsubscript{a}).
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a \emph{momentum sum rule} (in \(\overline{\text{MS}}\)):
 \begin{align}
   \sum_a \int_0^1 \mathrm{d}x_a \; x_a\,f_{a\vert H}(x_a)
   &= 1
 \end{align}
 
-Let's see how the momenta are distributed accross different flavours
+Let's see how the momenta are distributed across different flavours
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 import lhapdf
 import math
@@ -140,7 +140,7 @@ pdf = lhapdf.mkPDF("PDF4LHC21_40", 0)
 res = list()
 int_sum = [0.,0.]
 for id,label in [(-5,"bb"),(-4,"cb"),(-3,"sb"),(-2,"ub"),(-1,"db"),(0,"g"),(1,"d"),(2,"u"),(3,"s"),(4,"c"),(5,"b")]:
-    int_res = scipy.integrate.quad(lambda x : pdf.xfxQ(id, x, q), 0, 1, limit=100)
+    int_res = scipy.integrate.quad(lambda x : pdf.xfxQ(id, x, q), 1e-6, 1, limit=100, epsrel=1e-3)
     int_sum[0] += int_res[0]
     int_sum[1] += int_res[1]**2
     #print(int_res)
@@ -167,5 +167,5 @@ SUM & 100\%\\[0pt]
 \end{center}
 
 So the gluon actually carries almost \(50\%\) of the proton's momentum!
-The up quark, with \(\sim20\%\), has the second largect contribution, followed by the down-quark \$\(\sim\)\$half the size of the up (which makes sense as p=(uud)).
+The up quark, with \(\sim20\%\), has the second largest contribution, followed by the down-quark \$\(\sim\)\$half the size of the up (which makes sense as p=(uud)).
 \end{document}
