@@ -1,4 +1,4 @@
-#+title: The Drell--Yan process: $\mathrm{p}\mathrm{p} \to \ell\bar{\ell}$
+#+title: The Drell--Yan process: $\mathrm{p}\mathrm{p} \to \ell^+\ell^-$
 #+author: Alexander Huss
 #+STARTUP: showall
 #+EXCLUDE_TAGS: noexport
@@ -7,7 +7,7 @@
 
 
 * Introduction
-We will implement the process $\mathrm{p}\mathrm{p} \to \ell\bar{\ell}$.
+We will implement the process $\mathrm{p}\mathrm{p} \to \ell^+\ell^-$.
 This gives us access to a simple hadron-collider process that constitutes a "Standard Candle" at the LHC and has a wide range of applications.
 
 * Cross section
@@ -15,7 +15,7 @@ This gives us access to a simple hadron-collider process that constitutes a "Sta
 ** Partonic cross section
 
 The squared Matrix Element is essentially the same as the one we looked at in the $\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-$ case.
-To make life a little easier for us, we integrated out the kinematics of the $\mathrm{Z}/\gamma^*\to\ell\bar{\ell}$ system.
+To make life a little easier for us, we integrated out the kinematics of the $\mathrm{Z}/\gamma^*\to\ell^+\ell^-$ system.
 In particular, this means that we're no longer sensitive to the $G_2$ function in the $\mathrm{e}^+\mathrm{e}^-$ case that was parity odd.
 
 We begin by defining separate /lepton/ and /hadron/ structure functions
@@ -50,7 +50,7 @@ and ($N_c = 3$)
 \end{align}
 that we can use to assemble the /partonic/ cross section:
 \begin{align}
-  \hat{\sigma}_{\bar{q}q\to\ell\bar{\ell}}(p_a,\,p_b)
+  \hat{\sigma}_{\bar{q}q\to\ell^+\ell^-}(p_a,\,p_b)
   &=
   \frac{1}{2\hat{s}} \; \frac{1}{36} \; \biggl\{
   L_{\gamma\gamma}(\hat{s}) \mathcal{H}^{(0)}_{\gamma\gamma}(\hat{s})
@@ -154,12 +154,12 @@ def cross_partonic(shat: float, qid: int, par=PARAM) -> float:
 ** Hadronic cross section and lepton-pair observables
 The hadronic cross section is obtained by convoluting the partonic one with the parton distribution functions:
 \begin{align}
-  \sigma_{A B \to \ell\bar{\ell}} (P_A, P_B)
+  \sigma_{A B \to \ell^+\ell^-} (P_A, P_B)
   &=
   \sum_{a,b}
   \int_0^1\mathrm{d}x_a \; f_{a\vert A}(x_a)
   \int_0^1\mathrm{d}x_b \; f_{b\vert B}(x_b) \;
-  \hat{\sigma}_{ab\to\ell\bar{\ell}}(x_a P_A,\,x_b P_B)
+  \hat{\sigma}_{ab\to\ell^+\ell^-}(x_a P_A,\,x_b P_B)
   \,,
 \end{align}
 where the indices $a$ and $b$ run over all possible partons inside the hadrons $A$ and $B$, respectively.
@@ -170,10 +170,10 @@ To get the differential cross section, we need to differentiate the above formul
 Two variables suitable are the invariant mass, $M_{\ell\ell} = \sqrt{q^2}$, and the rapidity, $Y_{\ell\ell} = \tfrac{1}{2}\ln\Bigl(\tfrac{q^0+q^3}{q^0-q^3}\Bigr)$, of the di-lepton system.
 Being differential in these two observables, we're left with no more integrations at LO and the entire kinematics is fixed:
 \begin{align}
-  \frac{\mathrm{d}^2\sigma_{A B \to \ell\bar{\ell}}}{\mathrm{d}M_{\ell\ell}\mathrm{d}Y_{\ell\ell}}
+  \frac{\mathrm{d}^2\sigma_{A B \to \ell^+\ell^-}}{\mathrm{d}M_{\ell\ell}\mathrm{d}Y_{\ell\ell}}
   &=
   f_{a\vert A}(x_a) \; f_{b\vert B}(x_b) \; \frac{2\,M_{\ell\ell}}{E_\mathrm{cm}^2} \;
-  \hat{\sigma}_{ab\to\ell\bar{\ell}}(x_a P_A,\,x_b P_B)
+  \hat{\sigma}_{ab\to\ell^+\ell^-l}(x_a P_A,\,x_b P_B)
   \;\bigg\vert_{x_{a/b}\equiv\tfrac{M_{\ell\ell}}{E_\mathrm{cm}}\mathrm{e}^{\pm Y_{\ell\ell}}}
 \end{align}
 
