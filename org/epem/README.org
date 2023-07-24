@@ -8,9 +8,9 @@
 
 * Introduction
 We will implement the process $\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-$ at leading order.
-This is among the simplest processes while it gives us many knobs to play around with to get an idea about the physics underlying these predictions.
+This is among the simplest processes there are but it gives us many knobs to play around with to get an idea about the physics underlying these predictions.
 
-* Cross section and forward--backward asymmety
+* Cross section and forward--backward asymmetry
 
 ** The squared Matrix Element
 We have seen in the lecture that the squared amplitude (summed/averaged over final-/initial-state degrees of freedom) is given by
@@ -91,7 +91,7 @@ The formula for the differential cross section reads
   \frac{\alpha^2\pi}{2 s} \Bigl[ G_1(s)\; (1+\cos^2(\theta)) + G_2(s)\; 2 \cos(\theta) \Bigr]
   \,,
 \end{align}
-where $s=(p_{\mathrm{e}^+}+p_{\mathrm{e}^-})^2=(p_{\mu^+}+p_{\mu^-})^2 = 4 E_\mathrm{B}^2$ is the centre-of-mass energy of the collision and $\theta$ the scattering angle between the electron and the muon.
+where $s=(p_{\mathrm{e}^+}+p_{\mathrm{e}^-})^2=(p_{\mu^+}+p_{\mu^-})^2 = 4 E_\mathrm{cm}^2$ is the centre-of-mass energy of the collision and $\theta$ the scattering angle between the electron and the muon.
 
 We obtain the total cross section by integrating over $\cos\theta$:
 \begin{align}
@@ -124,7 +124,7 @@ We'll start with the implementation of the total cross section
 def cross(s: float, par=PARAM) -> float:
   return par.GeVnb * par.alpha**2*math.pi/(2.*s) * (8./3.) * G1(s, par)
 #+end_src
-and deifne another function for the forward--backward asymmetry
+and define another function for the forward--backward asymmetry
 #+begin_src python
 def AFB(s: float, par=PARAM) -> float:
   return (3./4.) * G2(s,par)/G1(s,par)
