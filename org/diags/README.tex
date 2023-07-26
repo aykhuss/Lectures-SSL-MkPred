@@ -1,4 +1,4 @@
-% Created 2023-07-23 Sun 13:11
+% Created 2023-07-26 Wed 09:51
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
  pdftitle={Feynman diagrams},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 28.2 (Org mode 9.6.1)}, 
+ pdfcreator={Emacs 28.2 (Org mode 9.7)}, 
  pdflang={English}}
 \begin{document}
 
@@ -33,12 +33,12 @@
 
 
 \section{Introduction}
-\label{sec:org6a62b62}
+\label{sec:orgd606787}
 Let's have some fun with Feynman diagrams; we'll use the tool \texttt{qgraf} for their generation.
 If you want to reproduce the results in this document, you can get the source from here: \href{https://cfif.ist.utl.pt/\~paulo/qgraf.html}{qgraf} (note that you'll need a \texttt{Fortran} compiler for this).
 
 \section{Drell--Yan}
-\label{sec:org9bc17c9}
+\label{sec:org8b3ee1d}
 Let's start simple and see how we can generate the diagrams for the Drell--Yan process that we already know.
 The example files are located in \texttt{../../tools/qgraf/dy} and the program is controlled using the input file \texttt{qgraf.dat}.
 In this example, the Feynman rules are encoded in a simple model file \texttt{dyqcd} and the output style is set by \texttt{custom.sty}.
@@ -88,7 +88,7 @@ This will generate the output inside the file \texttt{qlist.out}:
 which are precisely the two s-channel diagrams we already know for this process.
 
 \section{Gluon scattering}
-\label{sec:orga2188d0}
+\label{sec:orgd7aa44c}
 We will now consider the case of \(2\to n\) gluon scattering, \(\mathrm{g}\mathrm{g} \to \mathrm{g}\ldots\mathrm{g}\).
 To make this more generic, we have a template file from which we generate an input file for \texttt{qgraf} to automatically excract the number of diagrams \texttt{qgraf} has generated for us.
 \begin{minted}[frame=lines,fontsize=\scriptsize]{shell}
@@ -135,4 +135,28 @@ where \(\mathcal{N}_{n+2}(g,t)\) is a polynomial that ``counts'' the number of g
   \mathcal{N}_{3}(g,t) &= g^3\,t
 \end{align}
 The first term corresponds to an insertion of a new gluon into an existing gluon line, while the second term describes the insertion of a gluon into an existing three-gluon vertex and converting it to a four-gluon vertex.
+
+\begin{minted}[frame=lines,fontsize=\scriptsize]{python}
+import sympy
+g, t = sympy.symbols('g t')
+n_poly = g**3 * t
+n_legs = 3
+for i in range(10):
+    n_poly = sympy.diff(n_poly,g) * g**3 * t + sympy.diff(n_poly,t) * g
+    n_legs += 1
+    print("{}->{} gluon scattering has {} diagrams".format(2,n_legs-2,n_poly.subs([(g,1),(t,1)])))
+\end{minted}
+
+\begin{verbatim}
+2->2 gluon scattering has 4 diagrams
+2->3 gluon scattering has 25 diagrams
+2->4 gluon scattering has 220 diagrams
+2->5 gluon scattering has 2485 diagrams
+2->6 gluon scattering has 34300 diagrams
+2->7 gluon scattering has 559405 diagrams
+2->8 gluon scattering has 10525900 diagrams
+2->9 gluon scattering has 224449225 diagrams
+2->10 gluon scattering has 5348843500 diagrams
+2->11 gluon scattering has 140880765025 diagrams
+\end{verbatim}
 \end{document}

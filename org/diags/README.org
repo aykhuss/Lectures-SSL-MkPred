@@ -123,3 +123,28 @@ where \(\mathcal{N}_{n+2}(g,t)\) is a polynomial that "counts" the number of glu
   \mathcal{N}_{3}(g,t) &= g^3\,t
 \end{align}
 The first term corresponds to an insertion of a new gluon into an existing gluon line, while the second term describes the insertion of a gluon into an existing three-gluon vertex and converting it to a four-gluon vertex.
+
+#+begin_src python :results output verbose :exports both
+import sympy
+g, t = sympy.symbols('g t')
+n_poly = g**3 * t
+n_legs = 3
+for i in range(10):
+    n_poly = sympy.diff(n_poly,g) * g**3 * t + sympy.diff(n_poly,t) * g
+    n_legs += 1
+    print("{}->{} gluon scattering has {} diagrams".format(2,n_legs-2,n_poly.subs([(g,1),(t,1)])))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+2->2 gluon scattering has 4 diagrams
+2->3 gluon scattering has 25 diagrams
+2->4 gluon scattering has 220 diagrams
+2->5 gluon scattering has 2485 diagrams
+2->6 gluon scattering has 34300 diagrams
+2->7 gluon scattering has 559405 diagrams
+2->8 gluon scattering has 10525900 diagrams
+2->9 gluon scattering has 224449225 diagrams
+2->10 gluon scattering has 5348843500 diagrams
+2->11 gluon scattering has 140880765025 diagrams
+#+end_example
