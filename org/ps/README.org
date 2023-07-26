@@ -1,0 +1,100 @@
+#+TITLE: Parton Showers
+#+AUTHOR: Alexander Huss
+#+STARTUP: showall
+#+LATEX_HEADER: \usepackage[a4paper]{geometry}
+#+LATEX_HEADER: \usepackage{mathtools}
+
+
+* Introduction
+We will investigate the emission probability of gluons off quarks and gluons and use that to implement a *very* simplifued parton shower (only final state primary branching, leading double-log, only virtuality $q^2$ and not proper kinematics, ...).
+
+* Emission probability and the Sudakov form factor
+In the leading double-log approximation (soft /and/ collinear emission), we have seen in the lecture that the emission propability is given as
+\begin{align}
+  \mathrm{d}\omega_{X\to X+g}
+  &=
+  2 \, \frac{\alpha_s}{\pi}\; C_X \; \frac{\mathrm{d}E}{E} \; \frac{\mathrm{d}\theta}{\theta}
+  \,,
+\end{align}
+where $E$ denotes the energy of the emitted gluon and $\theta$ the angle w.r.t. the parent particle.
+We denote the emitting particle by "$X$" and $C_X$ is the associated colour factor.
+For quarks, $C_X=C_F=\tfrac{4}{3}$ and for gluons $C_X=C_A=3$.
+
+For any parton shower, we first need to fix the evolution variable w.r.t. which we want to generate emissions.
+To this end, we choose the virtuality $q^2$ associated with the emission for which we find
+\begin{align}
+  d\mathcal{P}
+  &=
+  \frac{\alpha_s}{\pi}\; C_X \; \frac{\mathrm{d}q^2}{q^2} \; \ln\biggl(\frac{q^2}{Q_0^2}\biggr)
+\end{align}
+where $Q_0$ denotes a cutoff below which emissions are considered unresolved.
+We next define the so-called Sudakov form factor $\Delta(Q^2,q^2)$, which is the probability for /no resolved emissions/ to happen between $Q^2 \to q^2$.
+It saitisfies a differential equation reminiscent of radiative decay with a simple solution
+\begin{align}
+  \frac{\mathrm{d}\Delta(Q^2,q^2)}{\mathrm{d}q^2}
+  &=
+  \Delta(Q^2,q^2) \; \frac{\mathrm{d}\mathcal{P}}{\mathrm{d}q^2}
+  \,,&
+  \Delta(Q^2)
+  &\equiv \Delta(Q^2,Q_0^2)
+  =
+  \exp\biggl\{-\frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{q^2}{Q_0^2}\biggr) \biggr\}
+\end{align}
+
+* Implementation
+
+With the Sudakov form factor at hand, we can easily iterate the sampling of emissions using these steps:
+1. set $Q = Q_\mathrm{start}$
+2. draw a uniform random number $r$ in the range $[0,\,1]$
+3. if $r<\Delta(Q^2)$, no resolvable emission can be generated ($<Q_0$):
+   Terminate loop.
+4. solve $r = \Delta(Q^2) / \Delta(Q_\mathrm{new}^2)$ for $Q_\mathrm{new}$, which is the new emission scale.
+5. set $Q = Q_\mathrm{new}$ and go back to step 2.
+
+#+INCLUDE: "main.py" src python
+
+Let's use the implementation to generate some "events"
+#+begin_src shell :results silent
+python main.py 100 g 0.118 100000 > data_g.dat
+python main.py 100 q 0.118 100000 > data_q.dat
+#+end_src
+
+We can see that the all-order description damps the divergent behaviour of a pure fixed-order prediction for $Q\to0$.
+Given $C_A > C_F$, we also see how a gluon generates more emissions than quarks.
+This property can be exploited to try and discriminate between "quark jets" and "gluon jets".
+#+begin_src gnuplot :file data_Q.png
+unset log x
+set xlabel '∑ Q [GeV]'
+set xrange [*:*]
+unset log y
+set ylabel 'N'
+set yrange [*:*]
+
+binwidth=5
+bin(x,width)=width*floor(x/width)
+
+plot "< awk '$1~/summary/{print $2,$3}' data_g.dat" using (bin($2,binwidth)):(1.0) smooth freq with boxes t 'gluon', \
+     "< awk '$1~/summary/{print $2,$3}' data_q.dat" using (bin($2,binwidth)):(1.0) smooth freq with boxes t 'quark'
+#+end_src
+
+#+RESULTS:
+[[file:data_Q.png]]
+
+
+#+begin_src gnuplot :file data_N.png
+unset log x
+set xlabel 'N_{emisisons}'
+set xrange [*:*]
+unset log y
+set ylabel 'N'
+set yrange [*:*]
+
+binwidth=1
+bin(x,width)=width*floor(x/width)
+
+plot "< awk '$1~/summary/{print $2,$3}' data_g.dat" using (bin($1,binwidth)):(1.0) smooth freq with boxes t 'gluon', \
+     "< awk '$1~/summary/{print $2,$3}' data_q.dat" using (bin($1,binwidth)):(1.0) smooth freq with boxes t 'quark'
+#+end_src
+
+#+RESULTS:
+[[file:data_N.png]]
