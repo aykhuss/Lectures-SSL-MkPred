@@ -1,4 +1,4 @@
-% Created 2023-07-24 Mon 16:29
+% Created 2023-07-30 Sun 17:36
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,11 +33,11 @@
 
 
 \section{Introduction}
-\label{sec:orga02b098}
-We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library through python to evaluate parton distribution functions and play around with them a bit.
+\label{sec:org76b74a7}
+We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library from python to evaluate parton distribution functions and play around with them a bit.
 
 \section{Evaluating PDFs}
-\label{sec:orga334cac}
+\label{sec:orge6e5fa1}
 Let's have a look at one specific PDF set \texttt{PDF4LHC21\_40}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -72,9 +72,16 @@ return res
 \includegraphics[width=.9\linewidth]{pdf_xfx.png}
 \end{center}
 
+\begin{quote}
+\begin{itemize}
+\item Change the scale in the figure from 10 to 100 GeV or even to 1 TeV; adjust the scaling factor as necessary.
+How does the distributions change?
+Does it correspond to the expectation of the QCD improved parton model?
+\end{itemize}
+\end{quote}
 
 \section{The quantum numbers of the proton}
-\label{sec:org1a67141}
+\label{sec:org910f48a}
 The quantum numbers of the proton are determined by the valence quarks, p=(uud).
 Given that PDFs are \emph{number densities} for the constituent partons, the following flavour sum rules hold:
 \begin{align}
@@ -121,7 +128,7 @@ b & -8.819432616743546e-05\\[0pt]
 \end{center}
 
 \section{Momentum sum rules}
-\label{sec:orgdc9cf80}
+\label{sec:orgbeb4503}
 The parton \(a\) carries a momentum fraction \(x_a\) of the parent hadron, \(p_a^\mu=x_a\,P^\mu\).
 Therefore, the momentum density associated with that parton is given by \$x\textsubscript{a$\backslash$,f}\textsubscript{a\(\vert{}\) H}(x\textsubscript{a}).
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a \emph{momentum sum rule} (in \(\overline{\text{MS}}\)):
@@ -168,4 +175,11 @@ SUM & 100\%\\[0pt]
 
 So the gluon actually carries almost \(50\%\) of the proton's momentum!
 The up quark, with \(\sim20\%\), has the second largest contribution, followed by the down-quark \$\(\sim\)\$half the size of the up (which makes sense as p=(uud)).
+
+\begin{quote}
+\begin{itemize}
+\item Vary the scale and see how the momentum composition of the proton changes.
+How robust are the numbers?
+\end{itemize}
+\end{quote}
 \end{document}

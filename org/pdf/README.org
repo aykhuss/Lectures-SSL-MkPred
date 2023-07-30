@@ -6,7 +6,7 @@
 
 
 * Introduction
-We will call the [[https://lhapdf.hepforge.org/][LHAPDF]] library through python to evaluate parton distribution functions and play around with them a bit.
+We will call the [[https://lhapdf.hepforge.org/][LHAPDF]] library from python to evaluate parton distribution functions and play around with them a bit.
 
 * Evaluating PDFs
 Let's have a look at one specific PDF set =PDF4LHC21_40=
@@ -58,6 +58,11 @@ plot data  \
 #+RESULTS:
 [[file:pdf_xfx.png]]
 
+#+BEGIN_QUOTE
+- Change the scale in the figure from 10 to 100 GeV or even to 1 TeV; adjust the scaling factor as necessary.
+  How does the distributions change?
+  Does it correspond to the expectation of the QCD improved parton model?
+#+END_QUOTE
 
 * The quantum numbers of the proton
 The quantum numbers of the proton are determined by the valence quarks, p=(uud).
@@ -148,3 +153,8 @@ return res
 
 So the gluon actually carries almost $50\%$ of the proton's momentum!
 The up quark, with $\sim20\%$, has the second largest contribution, followed by the down-quark $\sim$half the size of the up (which makes sense as p=(uud)).
+
+#+begin_quote
+- Vary the scale and see how the momentum composition of the proton changes.
+  How robust are the numbers?
+#+end_quote
