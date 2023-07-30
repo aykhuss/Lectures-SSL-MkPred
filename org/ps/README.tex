@@ -1,4 +1,4 @@
-% Created 2023-07-26 Wed 11:36
+% Created 2023-07-30 Sun 17:27
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,12 +33,12 @@
 
 
 \section{Introduction}
-\label{sec:org85d9fdd}
-We will investigate the emission probability of gluons off quarks and gluons and use that to implement a \textbf{very} simplifued parton shower (only final state primary branching, leading double-log, only virtuality \(q^2\) and not proper kinematics, \ldots{}).
+\label{sec:orgdf5b20a}
+We will investigate the emission probability of gluons off quarks and gluons and use that to implement a \textbf{very} simplified parton shower (only final state, primary branching, leading double-log, only virtuality \(q^2\) and not proper kinematics, \ldots{}).
 
 \section{Emission probability and the Sudakov form factor}
-\label{sec:orga58c098}
-In the leading double-log approximation (soft \emph{and} collinear emission), we have seen in the lecture that the emission propability is given as
+\label{sec:org8c83906}
+In the leading double-log approximation (soft \emph{and} collinear emission), we have seen in the lecture that the emission probability is given as
 \begin{align}
   \mathrm{d}\omega_{X\to X+g}
   &=
@@ -55,32 +55,42 @@ To this end, we choose the virtuality \(q^2\) associated with the emission for w
   d\mathcal{P}
   &=
   \frac{\alpha_s}{\pi}\; C_X \; \frac{\mathrm{d}q^2}{q^2} \; \ln\biggl(\frac{q^2}{Q_0^2}\biggr)
+  \xrightarrow{\int\mathrm{d}q^2}
+  \frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{q^2}{Q_0^2}\biggr)
 \end{align}
 where \(Q_0\) denotes a cutoff below which emissions are considered unresolved.
-We next define the so-called Sudakov form factor \(\Delta(Q^2,q^2)\), which is the probability for \emph{no resolved emissions} to happen between \(Q^2 \to q^2\).
-It saitisfies a differential equation reminiscent of radiative decay with a simple solution
+Note that this fixed-order result comes with a serious problem: For one \(\alpha_s\), we get two powers of a potentially large logarithm (the so-called ``double logarithms'' that appear frequently in higher-order calculations), a pattern that will continue to higher orders.
+For some representative values (\(\alpha_s \sim 0.1\), \(Q_0 \sim \Lambda_\mathrm{QCD} \sim 0.2\,\mathrm{GeV}\), \(q\sim 100\,\mathrm{GeV}\)), we quickly realize that the large logarithm compensates the small value of the coupling, giving rise to a non-converging expansion.
+In such situations, where we are sensitive to large logarithms, we need to re-arrange the perturbative expansion in such a way to ``re-sum'' these large logarithms to all orders.
+
+To accomplish this, we define the so-called Sudakov form factor \(\Delta(Q^2,q^2)\), which is the probability for \emph{no resolved emissions} to happen between the evolution \(Q^2 \to q^2\).
+It satisfies a differential equation reminiscent of radiative decay with a simple solution
 \begin{align}
   \frac{\mathrm{d}\Delta(Q^2,q^2)}{\mathrm{d}q^2}
   &=
   \Delta(Q^2,q^2) \; \frac{\mathrm{d}\mathcal{P}}{\mathrm{d}q^2}
-  \,,&
+  \,,\nonumber\\
   \Delta(Q^2)
   &\equiv \Delta(Q^2,Q_0^2)
   =
   \exp\biggl\{-\frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{q^2}{Q_0^2}\biggr) \biggr\}
+  \,,
 \end{align}
+which now has the large logarithm in the exponent.
+This solution therefore accomplishes exactly what we wanted: sum up the problematic logarithms to all orders, and in doing so, tame the otherwise divergent behaviour (\(Q_0\to0\)).
+It turns out that we can use the Sudakov form factor to sample successive emissions (it's a Markovian process), which we discuss in the next section.
 
 \section{Implementation}
-\label{sec:org61bbcbf}
+\label{sec:org087d460}
 
-With the Sudakov form factor at hand, we can easily iterate the sampling of emissions using these steps:
+With the Sudakov form factor at hand, we can easily iterate the sampling of emissions using the following steps:
 \begin{enumerate}
 \item set \(Q = Q_\mathrm{start}\)
 \item draw a uniform random number \(r\) in the range \([0,\,1]\)
 \item if \(r<\Delta(Q^2)\), no resolvable emission can be generated (\(<Q_0\)):
 Terminate loop.
 \item solve \(r = \Delta(Q^2) / \Delta(Q_\mathrm{new}^2)\) for \(Q_\mathrm{new}\), which is the new emission scale.
-\item set \(Q = Q_\mathrm{new}\) and go back to step 2.
+\item ``generate'' the emission at \(Q_\mathrm{new}\), set \(Q = Q_\mathrm{new}\) and go back to step 2.
 \end{enumerate}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -149,4 +159,13 @@ This property can be exploited to try and discriminate between ``quark jets'' an
 \begin{center}
 \includegraphics[width=.9\linewidth]{data_N.png}
 \end{center}
+
+
+
+\begin{quote}
+\begin{itemize}
+\item To increase the amount of emissions, try out setting the strong coupling to \(\alpha_s=0.5\).
+How does the picture change?
+\end{itemize}
+\end{quote}
 \end{document}
