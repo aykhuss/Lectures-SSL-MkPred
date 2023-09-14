@@ -6,108 +6,175 @@
 
 
 * Introduction
-We will investigate the emission probability of gluons off quarks and gluons and use that to implement a *very* simplified parton shower (only final state, primary branching, leading double-log, only virtuality $q^2$ and not proper kinematics, ...).
+We will investigate the gluon-emission probability off quarks and gluons and use that to implement a *very* simplified parton shower (single final-state leg, only primary branching, leading double-log, only $k_T$ and not proper kinematics, ...).
 
 * Emission probability and the Sudakov form factor
 In the leading double-log approximation (soft /and/ collinear emission), we have seen in the lecture that the emission probability is given as
 \begin{align}
   \mathrm{d}\omega_{X\to X+g}
   &=
-  2 \, \frac{\alpha_s}{\pi}\; C_X \; \frac{\mathrm{d}E}{E} \; \frac{\mathrm{d}\theta}{\theta}
+  \frac{2\alpha_s C_X}{\pi} \; \frac{\mathrm{d}\theta}{\theta} \; \frac{\mathrm{d}E}{E}
   \,,
 \end{align}
 where $E$ denotes the energy of the emitted gluon and $\theta$ the angle w.r.t. the parent particle.
 We denote the emitting particle by "$X$" and $C_X$ is the associated colour factor.
 For quarks, $C_X=C_F=\tfrac{4}{3}$ and for gluons $C_X=C_A=3$.
 
-For any parton shower, we first need to fix the evolution variable w.r.t. which we want to generate emissions.
-To this end, we choose the virtuality $q^2$ associated with the emission for which we find
+For any parton shower, we need to choose an evolution variable w.r.t. which we want to generate ordered emissions (angle $\theta$, transverse momentum $k_T$, virtuality $q^2$, ...).
+We will perform a slight change of variables, $k_T \propto E \theta$ (transverse momentum w.r.t. the parent parton) and $z \propto E$ (energy fraction of the emitted gluon) and integrate out the momentum fraction with the $k_T$ constraint to obtain the emission probability
 \begin{align}
-  d\mathcal{P}
+  \mathrm{d}\mathcal{P}_\text{emit}
   &=
-  \frac{\alpha_s}{\pi}\; C_X \; \frac{\mathrm{d}q^2}{q^2} \; \ln\biggl(\frac{q^2}{Q_0^2}\biggr)
-  \xrightarrow{\int\mathrm{d}q^2}
-  \frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{q^2}{Q_0^2}\biggr)
+  \frac{2\alpha_s C_X}{\pi} \; \frac{\mathrm{d}k_T}{k_T} \int_{k_T/k_T^\mathrm{max}}^1 \frac{\mathrm{d}z}{z}
+  =
+  \frac{2\alpha_s C_X}{\pi} \; \frac{\mathrm{d}k_T}{k_T} \ln\biggl(\frac{k_T^\mathrm{max}}{k_T}\biggr)
+  \,,
 \end{align}
-where $Q_0$ denotes a cutoff below which emissions are considered unresolved.
-Note that this fixed-order result comes with a serious problem: For one $\alpha_s$, we get two powers of a potentially large logarithm (the so-called "double logarithms" that appear frequently in higher-order calculations), a pattern that will continue to higher orders.
-For some representative values ($\alpha_s \sim 0.1$, $Q_0 \sim \Lambda_\mathrm{QCD} \sim 0.2\,\mathrm{GeV}$, $q\sim 100\,\mathrm{GeV}$), we quickly realize that the large logarithm compensates the small value of the coupling, giving rise to a non-converging expansion.
+where $k_T^\mathrm{max}$ denotes the upper bound on the transverse momentum that the emission can carry and is of the order of the hard scale.
+
+We will further integrate over $k_T$ with a lower cut-off $k_T^\mathrm{cut}$, below which we consider the emission to be unresolved, and get for the probability of a single resolved emission
+\begin{align}
+  \mathcal{P}_\text{emit}(k_T>k_T^\mathrm{cut})
+  &=
+  \frac{\alpha_s C_X}{\pi} \; \ln^2\biggl(\frac{k_T^\mathrm{max}}{k_T^\mathrm{cut}}\biggr)
+  \,.
+\end{align}
+Note that this fixed-order result comes with a serious problem: For a power of $\alpha_s$, we get two powers of a potentially large logarithm (the so-called "double logarithms" that appear frequently in higher-order calculations), a pattern that will continue to higher orders.
+For some representative values ($\alpha_s \sim 0.1$, $k_T^\mathrm{cut} \sim \Lambda_\mathrm{QCD} \sim 0.2\,\mathrm{GeV}$, $k_T^\mathrm{max} \sim 100\,\mathrm{GeV}$), we quickly realize that the large logarithm compensates the small value of the coupling, giving rise to a non-converging expansion.
 In such situations, where we are sensitive to large logarithms, we need to re-arrange the perturbative expansion in such a way to "re-sum" these large logarithms to all orders.
 
-To accomplish this, we define the so-called Sudakov form factor $\Delta(Q^2,q^2)$, which is the probability for /no resolved emissions/ to happen between the evolution $Q^2 \to q^2$.
-It satisfies a differential equation reminiscent of radiative decay with a simple solution
+To accomplish this, we define the so-called Sudakov form factor $\Delta(t,t')$, which is the probability for /no resolved emissions/ to happen between the evolution $t \to t'$, where we introduced an "evolution time" $t\equiv\ln(k_T^\mathrm{max}/k_T)$.
+The Sudakov form factor is /multiplicative/, i.e. obeys $\Delta(t,t'') = \Delta(t,t') \Delta(t',t'')$, and satisfies a differential equation reminiscent of that of radiative decay ($\mathcal{P_\text{no-emit}} = 1-\mathcal{P_\text{emit}}$):
+#+name: eq:Dsud
 \begin{align}
-  \frac{\mathrm{d}\Delta(Q^2,q^2)}{\mathrm{d}q^2}
+  \frac{\mathrm{d}\Delta(t_0,t)}{\mathrm{d}t}
   &=
-  \Delta(Q^2,q^2) \; \frac{\mathrm{d}\mathcal{P}}{\mathrm{d}q^2}
-  \,,\nonumber\\
-  \Delta(Q^2)
-  &\equiv \Delta(Q^2,Q_0^2)
+  \Delta(t,t') \; \frac{\mathrm{d}\mathcal{P_\text{no-emit}}}{\mathrm{d}t'}
   =
-  \exp\biggl\{-\frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{q^2}{Q_0^2}\biggr) \biggr\}
+  - \Delta(t,t') \; \frac{\mathrm{d}\mathcal{P_\text{emit}}}{\mathrm{d}t'}
+  \,,
+\end{align}
+which has a simple solution
+#+name: eq:sud
+\begin{align}
+  \Delta(t,t')
+  &=
+  \Delta(t') / \Delta(t)
+  \,,\nonumber\\
+  \Delta(t)
+  &\equiv \Delta(0,t)
+  =
+  \exp\biggl\{-\frac{\alpha_s C_X}{2\pi} \, t^2 \biggr\}
+  =
+  \exp\biggl\{-\frac{\alpha_s C_X}{2\pi} \, \ln^2\biggl(\frac{k_T^\mathrm{max}}{k_T}\biggr) \biggr\}
   \,,
 \end{align}
 which now has the large logarithm in the exponent.
-This solution therefore accomplishes exactly what we wanted: sum up the problematic logarithms to all orders, and in doing so, tame the otherwise divergent behaviour ($Q_0\to0$).
-It turns out that we can use the Sudakov form factor to sample successive emissions (it's a Markovian process), which we discuss in the next section.
+This solution therefore accomplishes exactly what we wanted: sum up the problematic logarithms to all orders, and in doing so, tame the otherwise divergent behaviour ($k_T\to0$).
+It turns out that we can use the Sudakov form factor to sample successive emissions (it is a Markovian process), which we discuss in the next section together with a simple implementation.
 
 * Implementation
 
-With the Sudakov form factor at hand, we can easily iterate the sampling of emissions using the following steps:
-1. set $Q = Q_\mathrm{start}$
+** Interlude: Sampling
+Assume we have a uniform random number generator at our disposal sampling values in the range $r\in[0,1]$.
+We wish to generate samples $x_i$ drawn from a probability distribution $p(x)$.
+In the so-called /inversion method/, we use the fact that the /cumulant/ distribution, $P(x) = \int_{-\infty}^x\mathrm{d}x' p(x')$, is a strictly monotonic function with values in $P(x)\in[0,1]$ (it is a probability).
+We can thus obtain a sample $x_i$ by drawing $r_i$ uniformly from $[0,1]$ and then /inverting/ the relation $r_i = P(x_i)$ for x_i.
+The sample $x_i$ generated this way, follows the probability distribution $p(x)$.
+
+Often times, the cumulant of the distribution is not easy to invert.
+In such cases, one can also use the /rejection method/ (or "hit-and-miss") by finding a simpler distribution $\tilde{p}(x)$ that bounds $p(x)$ from above (in the simplest case the bound is just a constant).
+If we can draw samples from $\tilde{p}(x)$, all we need to do is to correct for the difference with respect to $p(x)$.
+This can be accomplished by drawing another uniform random number $s_i\in[0,1]$ and only accepting the point $\tilde{x}_i$ generated with $\tilde{p}(x)$ with the probability $p(\tilde{x}_i)/\tilde{p}(\tilde{x}_i)$.
+
+
+** Our Toy Shower
+With the Sudakov form factor in Eq. eqref:eq:sud at hand, we can easily iterate the sampling of emissions using the /inversion method/ described above given that the cumulant that corresponds to the probability for the /next emission/ is precisely the Sudakov.
+The steps of the shower are:
+1. set $k_T = k_T^\mathrm{max}$
 2. draw a uniform random number $r$ in the range $[0,\,1]$
-3. if $r<\Delta(Q^2)$, no resolvable emission can be generated ($<Q_0$):
+3. solve $r = \Delta(k_T, k_T')$ for $k_T'$, which is the new emission scale.
+4. if $k_T'<k_T^\mathrm{cut}$, no resolvable emission can be generated:
    Terminate loop.
-4. solve $r = \Delta(Q^2) / \Delta(Q_\mathrm{new}^2)$ for $Q_\mathrm{new}$, which is the new emission scale.
-5. "generate" the emission at $Q_\mathrm{new}$, set $Q = Q_\mathrm{new}$ and go back to step 2.
+5. "generate" the emission at $k_T'$, set $k_T = k_T'$ and go back to step 2.
+The shower cut-off $k_T^\mathrm{cut}$ is typically set to $\mathcal{1\,\mathrm{GeV}}$ and represents the scale at which the perturbative shower description breaks down and the generated emissions are handed over to the hadronization model to simulate the non-perturbative hadronization stage of the simulation.
 
 #+INCLUDE: "main.py" src python
 
-Let's use the implementation to generate some "events"
+* Playground
+Let us use the implementation to generate some "events"
 #+begin_src shell :results silent
-python main.py 100 g 0.118 100000 > data_g.dat
-python main.py 100 q 0.118 100000 > data_q.dat
+#> N, sum, log(sum), first, log(first)
+python main.py 500 g 0.118 200000 | awk '$1~/summary/{print $2,$3,$4,$5,$6}' > data_g.dat
+python main.py 500 q 0.118 200000 | awk '$1~/summary/{print $2,$3,$4,$5,$6}' > data_q.dat
 #+end_src
 
-We can see that the all-order description damps the divergent behaviour of a pure fixed-order prediction for $Q\to0$.
+First we plot the transverse momentum of the generated emissions (only first, sum of all).
+#+begin_src gnuplot :file plotKT.png
+reset
+set terminal pngcairo
+
+unset log x
+set xrange [*:0]
+set xlabel 'log(v / k@_T^{max})'
+unset log y
+set yrange [*:10000]
+set ylabel 'N'
+
+set key top left Left
+
+bw = 0.1
+histo(x) = bw * floor(x/bw)
+
+#> adjust parameters here according to the data that was generated
+ktmax = 500.0
+alps = 0.118
+Nevt = 200000.0
+fst(t,CX) = -(alps/pi)*CX*2*t*exp(-(alps/pi)*CX*t**2) * Nevt*bw
+fo(t,CX)  = -(alps/pi)*CX*2*t * Nevt*bw
+
+plot "data_q.dat" u (histo($5)):(1.0) smooth freq with boxes ls 1 t 'quark v = k_T(1^{st})', \
+     "+" u 1:(fst($1,4./3.)) w l ls 1 dt 1 notitle, \
+     "+" u 1:( fo($1,4./3.)) w l ls 1 dt 3 notitle, \
+     "data_g.dat" u (histo($5)):(1.0) smooth freq with boxes ls 2 t 'gluon v = k_T(1^{st})', \
+     "+" u 1:(fst($1,3.)) w l ls 2 dt 1 notitle, \
+     "+" u 1:( fo($1,3.)) w l ls 2 dt 3 notitle, \
+     "data_q.dat" u (histo($3)):(1.0) smooth freq with boxes ls 3 t 'quark v = ∑k_T', \
+     "data_g.dat" u (histo($3)):(1.0) smooth freq with boxes ls 4 t 'gluon v = ∑k_T'
+
+#+end_src
+
+#+RESULTS:
+[[file:plotKT.png]]
+
+
+
+We can see that the all-order description damps the divergent behaviour of a pure fixed-order prediction for $k_T\to0$.
+We show separately the first emission alone, which can be compared to the analytic expression in Eq. eqref:eq:Dsud given by the solid line and is in excellent agreement with the shower.
+In addition, we include a dotted line that corresponds to the fixed-order expression that is logarithmically divergent.
 Given $C_A > C_F$, we also see how a gluon generates more emissions than quarks.
 This property can be exploited to try and discriminate between "quark jets" and "gluon jets".
-#+begin_src gnuplot :file data_Q.png
+
+
+#+begin_src gnuplot :file plotN.png
+reset
+set terminal pngcairo
+
 unset log x
-set xlabel '∑ Q [GeV]'
-set xrange [*:*]
+set xrange [0:*]
+set xlabel 'n_{emissions}'
 unset log y
-set ylabel 'N'
 set yrange [*:*]
+set ylabel 'N'
 
-binwidth=5
-bin(x,width)=width*floor(x/width)
+plot "data_q.dat" u 1:(1.0) smooth freq with boxes ls 1 t 'quark', \
+     "data_g.dat" u 1:(1.0) smooth freq with boxes ls 2 t 'gluon'
 
-plot "< awk '$1~/summary/{print $2,$3}' data_g.dat" using (bin($2,binwidth)):(1.0) smooth freq with boxes t 'gluon', \
-     "< awk '$1~/summary/{print $2,$3}' data_q.dat" using (bin($2,binwidth)):(1.0) smooth freq with boxes t 'quark'
 #+end_src
 
 #+RESULTS:
-[[file:data_Q.png]]
+[[file:plotN.png]]
 
-
-#+begin_src gnuplot :file data_N.png
-unset log x
-set xlabel 'N_{emisisons}'
-set xrange [*:*]
-unset log y
-set ylabel 'N'
-set yrange [*:*]
-
-binwidth=1
-bin(x,width)=width*floor(x/width)
-
-plot "< awk '$1~/summary/{print $2,$3}' data_g.dat" using (bin($1,binwidth)):(1.0) smooth freq with boxes t 'gluon', \
-     "< awk '$1~/summary/{print $2,$3}' data_q.dat" using (bin($1,binwidth)):(1.0) smooth freq with boxes t 'quark'
-#+end_src
-
-#+RESULTS:
-[[file:data_N.png]]
 
 
 
