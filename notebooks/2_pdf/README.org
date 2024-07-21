@@ -13,7 +13,7 @@ Let's have a look at one specific PDF set =PDF4LHC21_40=
 
 #+NAME: lhapdf_xfx
 #+HEADER: :var q=100 qlog=1
-#+begin_src python :results silent
+#+begin_src python :results silent :python python3.10
 import lhapdf
 import numpy as np
 
@@ -38,10 +38,12 @@ for ix, x in enumerate(xs):
         +pdf.xfxQ(4, x, q)+pdf.xfxQ(-4, x, q)
         +pdf.xfxQ(5, x, q)+pdf.xfxQ(-5, x, q)
     )  # sum over all see quarks
-return res
+return res.tolist()
 #+end_src
 
-#+begin_src gnuplot :var data=lhapdf_xfx(10,1) :var fac=0.1 :file pdf_xfx.png
+#+begin_src gnuplot :var data=lhapdf_xfx(5,1) :var fac=0.1 :file pdf_xfx.png
+reset
+set terminal pngcairo
 set log x
 set xlabel "x"
 set xrange [1e-5:1]
@@ -49,7 +51,7 @@ unset log y
 set yrange [0:1]
 set ylabel "x f(x)"
 plot data  \
-     u 1:3 w lp t "valence up",  \
+        u 1:3 w lp t "valence up",  \
      "" u 1:4 w lp t "valence down",  \
      "" u 1:($5*fac) w lp t "gluon × ".fac,  \
      "" u 1:($6*fac) w lp t "see quarks × ".fac
@@ -87,7 +89,7 @@ Given that PDFs are /number densities/ for the constituent partons, the followin
 \end{align}
 Let's see if these hold for one of the global PDF sets:
 #+HEADER: :var q=100
-#+begin_src python :results value :exports both
+#+begin_src python :results value :exports both :python python3.10
 import lhapdf
 import math
 import scipy
@@ -119,7 +121,7 @@ Since the sum over all parton momenta must sum back up to the parent hadron one,
 
 Let's see how the momenta are distributed across different flavours
 #+HEADER: :var q=100
-#+begin_src python :results value :exports both
+#+begin_src python :results value :exports both :python python3.10
 import lhapdf
 import math
 import scipy

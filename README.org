@@ -9,4 +9,3 @@ This repository contains the slides and source files for the lectures on *"Makin
   + [[https://cds.cern.ch/record/2865910][lecture 1]]
   + [[https://cds.cern.ch/record/2866102][lecture 2]]
 
-I use [[https://orgmode.org/][Org Mode]] for the computational notebooks collected in the =org= folder.

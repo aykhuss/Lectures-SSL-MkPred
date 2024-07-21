@@ -1,0 +1,13 @@
+#+TITLE: Making Predictions at Hadron Colliders
+#+AUTHOR: Alexander Huss
+#+STARTUP: showall
+#+LATEX_HEADER: \usepackage[a4paper]{geometry}
+#+LATEX_HEADER: \usepackage{mathtools}
+
+This folder collects the notebooks that were used during the lectures.
+I use [[https://orgmode.org/][Org Mode]] for the computational notebooks collected in the =org= folder.
+1. $\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-$:
+  Compute various observables and illustrate their sensitivity to fundamental Standard Model parameters.
+2. Parton Distribution Functions:
+  Use LHAPDF to play with PDFs and numerically check sumrules.
+3. to be filled

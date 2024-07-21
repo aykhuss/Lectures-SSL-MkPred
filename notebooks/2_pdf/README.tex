@@ -1,4 +1,4 @@
-% Created 2023-07-30 Sun 17:36
+% Created 2024-07-21 Sun 17:04
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,21 +23,20 @@
  pdftitle={Parton Distribution Functions},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 28.2 (Org mode 9.7)}, 
+ pdfcreator={Emacs 29.4 (Org mode 9.8)}, 
  pdflang={English}}
+\usepackage{biblatex}
+
 \begin{document}
 
 \maketitle
 \tableofcontents
 
-
-
 \section{Introduction}
-\label{sec:org76b74a7}
+\label{sec:orgbb8d4d4}
 We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library from python to evaluate parton distribution functions and play around with them a bit.
-
 \section{Evaluating PDFs}
-\label{sec:orge6e5fa1}
+\label{sec:org6f59644}
 Let's have a look at one specific PDF set \texttt{PDF4LHC21\_40}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -65,11 +64,12 @@ for ix, x in enumerate(xs):
         +pdf.xfxQ(4, x, q)+pdf.xfxQ(-4, x, q)
         +pdf.xfxQ(5, x, q)+pdf.xfxQ(-5, x, q)
     )  # sum over all see quarks
-return res
+return res.tolist()
 \end{minted}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{pdf_xfx.png}
+\label{}
 \end{center}
 
 \begin{quote}
@@ -79,9 +79,8 @@ How does the distributions change?
 Does it correspond to the expectation of the QCD improved parton model?
 \end{itemize}
 \end{quote}
-
 \section{The quantum numbers of the proton}
-\label{sec:org910f48a}
+\label{sec:org691b34b}
 The quantum numbers of the proton are determined by the valence quarks, p=(uud).
 Given that PDFs are \emph{number densities} for the constituent partons, the following flavour sum rules hold:
 \begin{align}
@@ -117,18 +116,19 @@ for id,label in [(1,"d"),(2,"u"),(3,"s"),(4,"c"),(5,"b")]:
 return res
 \end{minted}
 
-\begin{center}
+\begin{table}[htbp]
+\label{}
+\centering
 \begin{tabular}{lr}
-d & 0.9867274422876251\\[0pt]
-u & 1.9924213767549757\\[0pt]
-s & 0.0037080323432484596\\[0pt]
-c & -0.00018756880668407142\\[0pt]
-b & -8.819432616743546e-05\\[0pt]
+d & 0.9867274422876251\\
+u & 1.9924213767549757\\
+s & 0.0037080323432484596\\
+c & -0.00018756880668407142\\
+b & -8.819432616743546e-05\\
 \end{tabular}
-\end{center}
-
+\end{table}
 \section{Momentum sum rules}
-\label{sec:orgbeb4503}
+\label{sec:org0a17727}
 The parton \(a\) carries a momentum fraction \(x_a\) of the parent hadron, \(p_a^\mu=x_a\,P^\mu\).
 Therefore, the momentum density associated with that parton is given by \$x\textsubscript{a$\backslash$,f}\textsubscript{a\(\vert{}\) H}(x\textsubscript{a}).
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a \emph{momentum sum rule} (in \(\overline{\text{MS}}\)):
@@ -156,22 +156,24 @@ res.append( ("SUM", "{:.0f}%".format(int_sum[0]*100.)) )
 return res
 \end{minted}
 
-\begin{center}
+\begin{table}[htbp]
+\label{}
+\centering
 \begin{tabular}{ll}
-bb & 1\%\\[0pt]
-cb & 2\%\\[0pt]
-sb & 3\%\\[0pt]
-ub & 4\%\\[0pt]
-db & 4\%\\[0pt]
-g & 47\%\\[0pt]
-d & 11\%\\[0pt]
-u & 22\%\\[0pt]
-s & 3\%\\[0pt]
-c & 2\%\\[0pt]
-b & 1\%\\[0pt]
-SUM & 100\%\\[0pt]
+bb & 1\%\\
+cb & 2\%\\
+sb & 3\%\\
+ub & 4\%\\
+db & 4\%\\
+g & 47\%\\
+d & 11\%\\
+u & 22\%\\
+s & 3\%\\
+c & 2\%\\
+b & 1\%\\
+SUM & 100\%\\
 \end{tabular}
-\end{center}
+\end{table}
 
 So the gluon actually carries almost \(50\%\) of the proton's momentum!
 The up quark, with \(\sim20\%\), has the second largest contribution, followed by the down-quark \$\(\sim\)\$half the size of the up (which makes sense as p=(uud)).
