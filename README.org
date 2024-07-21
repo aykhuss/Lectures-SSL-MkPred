@@ -4,10 +4,9 @@
 #+LATEX_HEADER: \usepackage[a4paper]{geometry}
 #+LATEX_HEADER: \usepackage{mathtools}
 
-This is the repository containing the slides and source files for the [[https://indico.cern.ch/event/1254879/timetable/][2023 CERN Summer Student Lecture Programme]] on "Making Predictions at Hadron Colliders".
-
-Recording of the lectures:
-- [[https://cds.cern.ch/record/2865910][lecture 1]]
-- [[https://cds.cern.ch/record/2866102][lecture 2]]
+This repository contains the slides and source files for the lectures on *"Making Predictions at Hadron Colliders"* given at the [[https://home.cern/summer-student-programme][CERN Summer Student Programme]].
+- Lecture recordings of the [[https://indico.cern.ch/event/1254879/timetable/][2023 CERN Summer Student Lecture Programme]]:
+  + [[https://cds.cern.ch/record/2865910][lecture 1]]
+  + [[https://cds.cern.ch/record/2866102][lecture 2]]
 
 I use [[https://orgmode.org/][Org Mode]] for the computational notebooks collected in the =org= folder.
