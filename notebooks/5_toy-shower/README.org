@@ -97,7 +97,7 @@ The steps of the shower are:
 4. if $k_T'<k_T^\mathrm{cut}$, no resolvable emission can be generated:
    Terminate loop.
 5. "generate" the emission at $k_T'$, set $k_T = k_T'$ and go back to step 2.
-The shower cut-off $k_T^\mathrm{cut}$ is typically set to $\mathcal{1\,\mathrm{GeV}}$ and represents the scale at which the perturbative shower description breaks down and the generated emissions are handed over to the hadronization model to simulate the non-perturbative hadronization stage of the simulation.
+The shower cut-off $k_T^\mathrm{cut}$ is typically set to $\mathcal{O}(1\,\mathrm{GeV})$ and represents the scale at which the perturbative shower description breaks down and the generated emissions are handed over to the hadronization model to simulate the non-perturbative hadronization stage of the simulation.
 
 #+INCLUDE: "main.py" src python
 

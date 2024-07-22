@@ -41,10 +41,10 @@ for ix, x in enumerate(xs):
 return res.tolist()
 #+end_src
 
-#+begin_src gnuplot :var data=lhapdf_xfx(5,1) :var fac=0.1 :file pdf_xfx.png
+#+begin_src gnuplot :var data=lhapdf_xfx(3,0) :var fac=1 :file pdf_xfx.png
 reset
 set terminal pngcairo
-set log x
+#set log x
 set xlabel "x"
 set xrange [1e-5:1]
 unset log y
@@ -104,11 +104,6 @@ return res
 #+end_src
 
 #+RESULTS:
-| d |      0.9867274422876251 |
-| u |      1.9924213767549757 |
-| s |   0.0037080323432484596 |
-| c | -0.00018756880668407142 |
-| b |  -8.819432616743546e-05 |
 
 * Momentum sum rules
 The parton $a$ carries a momentum fraction $x_a$ of the parent hadron, $p_a^\mu=x_a\,P^\mu$.

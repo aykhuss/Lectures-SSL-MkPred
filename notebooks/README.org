@@ -9,5 +9,10 @@ I use [[https://orgmode.org/][Org Mode]] for the computational notebooks collect
 1. $\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-$:
   Compute various observables and illustrate their sensitivity to fundamental Standard Model parameters.
 2. Parton Distribution Functions:
-  Use LHAPDF to play with PDFs and numerically check sumrules.
-3. to be filled
+  Use LHAPDF to play with PDFs and numerically check sum rules.
+3. The Drell-Yan process
+  Differential predictions for the simplest hadron-collider process
+4. Feynman Diagrams
+  Use a Feynman diagram generator to have a look at how their number scale with multiplicity.
+5. Parton showers
+  A toy implementation to illustrate the basic concepts of a parton shower
