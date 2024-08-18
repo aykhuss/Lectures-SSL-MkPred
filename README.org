@@ -8,4 +8,6 @@ This repository contains the slides and source files for the lectures on *"Makin
 - Lecture recordings of the [[https://indico.cern.ch/event/1254879/timetable/][2023 CERN Summer Student Lecture Programme]]:
   + [[https://cds.cern.ch/record/2865910][lecture 1]]
   + [[https://cds.cern.ch/record/2866102][lecture 2]]
-
+- Lecture recordings of the [[https://indico.cern.ch/event/1347523/timetable/][2024 CERN Summer Student Lecture Programme]]:
+  + [[https://cds.cern.ch/record/2905268][lecture 1]]
+  + [[https://cds.cern.ch/record/2906450][lecture 2]]
