@@ -1,4 +1,4 @@
-% Created 2024-07-22 Mon 08:52
+% Created 2025-07-20 Sun 17:15
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
  pdftitle={\(\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-\)},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 29.4 (Org mode 9.8)}, 
+ pdfcreator={Emacs 30.1 (Org mode 9.7.31)}, 
  pdflang={English}}
 \usepackage{biblatex}
 
@@ -33,14 +33,14 @@
 \tableofcontents
 
 \section{Introduction}
-\label{sec:org23bc66c}
+\label{sec:org256b156}
 We will implement the process \(\mathrm{e}^+\mathrm{e}^- \to \mu^+ \mu^-\) at leading order.
 This is among the simplest processes there are but it gives us many knobs to play around with to get an idea about the physics underlying these predictions.
 \section{Cross section and forward--backward asymmetry}
-\label{sec:orgfbcf688}
+\label{sec:orgb38ad48}
 
 \subsection{The squared Matrix Element}
-\label{sec:org3735d09}
+\label{sec:org5182538}
 We have seen in the lecture that the squared amplitude (summed/averaged over final-/initial-state degrees of freedom) is given by
 \begin{align}
   \frac{1}{4} \sum_\text{spins}
@@ -61,7 +61,7 @@ with the functions
   + 4 v_\mathrm{e} a_\mathrm{e} v_\mu a_\mu \biggl\lvert\frac{s}{s - M_\mathrm{Z}^2 + \mathrm{i}\Gamma_\mathrm{Z}M_\mathrm{Z}}\biggr\rvert^2
 \end{align*}
 \subsubsection{Implementation}
-\label{sec:org268cb11}
+\label{sec:org036fcad}
 We'll use a simple class to save and retrieve Standard Model parameters including some convenience functions:
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 class Parameters(object):
@@ -108,7 +108,7 @@ def G2(s: float, par=PARAM) -> float:
   return -2. * par.al**2 * par.Ql * par.propZ(s).real + 4. * par.vl**2 * par.al**2 * abs(par.propZ(s))**2
 \end{minted}
 \subsection{Differential and total cross sections and \(A_{FB}\)}
-\label{sec:orge57f223}
+\label{sec:org62d56a2}
 The formula for the differential cross section reads
 \begin{align}
   \frac{\mathrm{d}\sigma}{\mathrm{d}\cos\theta}
@@ -139,7 +139,7 @@ Another interesting quantity to look at is the forward--backward asymmetry defin
   \,.
 \end{align}
 \subsubsection{Implementation}
-\label{sec:org61551b4}
+\label{sec:orga99e845}
 We'll start with the implementation of the total cross section
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 def cross(s: float, par=PARAM) -> float:
@@ -151,10 +151,10 @@ def AFB(s: float, par=PARAM) -> float:
   return (3./4.) * G2(s,par)/G1(s,par)
 \end{minted}
 \section{Playground}
-\label{sec:org27cd157}
+\label{sec:orgc047fb3}
 
 \subsection{Export source code}
-\label{sec:orge548c6b}
+\label{sec:orgce627c8}
 We can export the python source code to a file \texttt{main.py}
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 import math
@@ -216,7 +216,7 @@ by using the \texttt{tangle} command
 (org-babel-tangle)
 \end{minted}
 \subsection{Collider energy scan}
-\label{sec:org0d57a00}
+\label{sec:org55dc294}
 Let's execute the python script we just exported and look at the total cross section and the forward--backward asymmetry as a function of the collider energy.
 \begin{minted}[frame=lines,fontsize=\scriptsize]{shell}
 python main.py
@@ -233,7 +233,7 @@ python main.py
 \label{}
 \end{center}
 \subsection{\(M_\mathrm{Z}\) variation}
-\label{sec:org38e8a40}
+\label{sec:orga22d9b5}
 Let's see how the cross section behaves under variation of the Z-boson mass
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
 import math
@@ -258,7 +258,7 @@ let's plot the dependence on the Z-boson mass around the resonance
 \label{}
 \end{center}
 \subsection{\(\Gamma_\mathrm{Z}\) variation}
-\label{sec:org919a377}
+\label{sec:orgb397050}
 Let's check how the picture would change if we had a different number of light neutrino species.
 The branching fraction of a Z-boson decay into neutrino (``invisible decay'') is 20\%.
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -286,7 +286,7 @@ let's plot how much the Z line shape varies with the number of neutrino generati
 \label{}
 \end{center}
 \subsection{\(A_{FB}\) and the weak mixing angle}
-\label{sec:orgd9acaa6}
+\label{sec:org4d8b1a2}
 The forward--backward asymmetry is an observable that is sensitive to the weak mixing angle as we will see in the following.
 Moreover, defined as a ratio, many systematic uncertainties cancel.
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}

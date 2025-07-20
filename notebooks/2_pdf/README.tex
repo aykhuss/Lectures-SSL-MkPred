@@ -1,4 +1,4 @@
-% Created 2024-07-22 Mon 08:55
+% Created 2025-07-20 Sun 18:03
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
  pdftitle={Parton Distribution Functions},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 29.4 (Org mode 9.8)}, 
+ pdfcreator={Emacs 30.1 (Org mode 9.7.31)}, 
  pdflang={English}}
 \usepackage{biblatex}
 
@@ -33,10 +33,10 @@
 \tableofcontents
 
 \section{Introduction}
-\label{sec:orgf5fdfe5}
+\label{sec:org6d69479}
 We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library from python to evaluate parton distribution functions and play around with them a bit.
 \section{Evaluating PDFs}
-\label{sec:orgb879fd3}
+\label{sec:orgd21f2aa}
 Let's have a look at one specific PDF set \texttt{PDF4LHC21\_40}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -80,7 +80,7 @@ Does it correspond to the expectation of the QCD improved parton model?
 \end{itemize}
 \end{quote}
 \section{The quantum numbers of the proton}
-\label{sec:org87dea86}
+\label{sec:org9ad9979}
 The quantum numbers of the proton are determined by the valence quarks, p=(uud).
 Given that PDFs are \emph{number densities} for the constituent partons, the following flavour sum rules hold:
 \begin{align}
@@ -120,17 +120,17 @@ return res
 \label{}
 \centering
 \begin{tabular}{lr}
-d & 0.9867274422876251\\
+d & 0.9867274422876253\\
 u & 1.9924213767549757\\
-s & 0.0037080323432484596\\
-c & -0.00018756880668407142\\
-b & -8.819432616743546e-05\\
+s & 0.003708032343248529\\
+c & -0.00018756880668405516\\
+b & -8.819432616746102e-05\\
 \end{tabular}
 \end{table}
 \section{Momentum sum rules}
-\label{sec:org51c6b88}
+\label{sec:org81981f5}
 The parton \(a\) carries a momentum fraction \(x_a\) of the parent hadron, \(p_a^\mu=x_a\,P^\mu\).
-Therefore, the momentum density associated with that parton is given by \$x\textsubscript{a$\backslash$,f}\textsubscript{a\(\vert{}\) H}(x\textsubscript{a}).
+Therefore, the momentum density associated with that parton is given by \(x_a\,f_{a\vert H}(x_a)\).
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a \emph{momentum sum rule} (in \(\overline{\text{MS}}\)):
 \begin{align}
   \sum_a \int_0^1 \mathrm{d}x_a \; x_a\,f_{a\vert H}(x_a)
@@ -184,4 +184,7 @@ The up quark, with \(\sim20\%\), has the second largest contribution, followed b
 How robust are the numbers?
 \end{itemize}
 \end{quote}
+\section{Comparison of PDF sets}
+\label{sec:org07c577f}
+todo
 \end{document}

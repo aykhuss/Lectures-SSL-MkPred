@@ -13,7 +13,7 @@ Let's have a look at one specific PDF set =PDF4LHC21_40=
 
 #+NAME: lhapdf_xfx
 #+HEADER: :var q=100 qlog=1
-#+begin_src python :results silent :python python3.10
+#+begin_src python :results silent :python python
 import lhapdf
 import numpy as np
 
@@ -44,7 +44,7 @@ return res.tolist()
 #+begin_src gnuplot :var data=lhapdf_xfx(3,0) :var fac=1 :file pdf_xfx.png
 reset
 set terminal pngcairo
-#set log x
+# set log x
 set xlabel "x"
 set xrange [1e-5:1]
 unset log y
@@ -89,7 +89,7 @@ Given that PDFs are /number densities/ for the constituent partons, the followin
 \end{align}
 Let's see if these hold for one of the global PDF sets:
 #+HEADER: :var q=100
-#+begin_src python :results value :exports both :python python3.10
+#+begin_src python :results value :exports both :python python
 import lhapdf
 import math
 import scipy
@@ -104,10 +104,15 @@ return res
 #+end_src
 
 #+RESULTS:
+| d |      0.9867274422876253 |
+| u |      1.9924213767549757 |
+| s |    0.003708032343248529 |
+| c | -0.00018756880668405516 |
+| b |  -8.819432616746102e-05 |
 
 * Momentum sum rules
 The parton $a$ carries a momentum fraction $x_a$ of the parent hadron, $p_a^\mu=x_a\,P^\mu$.
-Therefore, the momentum density associated with that parton is given by $x_a\,f_{a\vert H}(x_a).
+Therefore, the momentum density associated with that parton is given by $x_a\,f_{a\vert H}(x_a)$.
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a /momentum sum rule/ (in $\overline{\text{MS}}$):
 \begin{align}
   \sum_a \int_0^1 \mathrm{d}x_a \; x_a\,f_{a\vert H}(x_a)
@@ -116,7 +121,7 @@ Since the sum over all parton momenta must sum back up to the parent hadron one,
 
 Let's see how the momenta are distributed across different flavours
 #+HEADER: :var q=100
-#+begin_src python :results value :exports both :python python3.10
+#+begin_src python :results value :exports both :python python
 import lhapdf
 import math
 import scipy
@@ -155,3 +160,45 @@ The up quark, with $\sim20\%$, has the second largest contribution, followed by 
 - Vary the scale and see how the momentum composition of the proton changes.
   How robust are the numbers?
 #+end_quote
+
+* Comparison of PDF sets
+
+#+NAME: lhapdf_PDFcomp
+#+HEADER: :var q=100 qlog=1 a=0
+#+begin_src python :results silent :python python
+import lhapdf
+import numpy as np
+
+lhapdf.setVerbosity(0)
+pdfs = [ lhapdf.mkPDF(pdf_name, 0) for pdf_name in ["PDF4LHC21_40", "CT18NNLO", "MSHT20nnlo_as118", "NNPDF40_nnlo_as_01180"] ]
+if qlog:
+    xs = [x for x in np.logspace(-5, 0, 50)]
+else:
+    xs = [x for x in np.linspace(0, 1, 50)]
+res = np.empty([len(xs),2+len(pdfs)])
+for ix, x in enumerate(xs):
+    res[ix,0] = x
+    res[ix,1] = q
+    for ip, pdf in enumerate(pdfs):
+        res[ix,2+ip] = pdf.xfxQ(a, x, q)
+return res.tolist()
+#+end_src
+
+#+begin_src gnuplot :var data=lhapdf_PDFcomp(100,1,1) :file pdf_PDFcomp.png
+reset
+set terminal pngcairo
+set log x
+set xlabel "x"
+set xrange [1e-5:0.9]
+unset log y
+set yrange [0.5:1.5]
+set ylabel "ratio to PDF4LHC"
+plot data  \
+        u 1:(1.)    w lp t "PDF4LHC",  \
+     "" u 1:($4/$3) w lp t "CT",  \
+     "" u 1:($5/$3) w lp t "MSHT",  \
+     "" u 1:($6/$3) w lp t "NNPDF"
+#+end_src
+
+#+RESULTS:
+[[file:pdf_PDFcomp.png]]
