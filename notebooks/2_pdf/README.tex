@@ -1,4 +1,4 @@
-% Created 2025-07-20 Sun 18:03
+% Created 2025-07-21 Mon 09:52
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,10 +33,10 @@
 \tableofcontents
 
 \section{Introduction}
-\label{sec:org6d69479}
+\label{sec:org562a89e}
 We will call the \href{https://lhapdf.hepforge.org/}{LHAPDF} library from python to evaluate parton distribution functions and play around with them a bit.
 \section{Evaluating PDFs}
-\label{sec:orgd21f2aa}
+\label{sec:orgba26df0}
 Let's have a look at one specific PDF set \texttt{PDF4LHC21\_40}
 
 \begin{minted}[frame=lines,fontsize=\scriptsize]{python}
@@ -80,7 +80,7 @@ Does it correspond to the expectation of the QCD improved parton model?
 \end{itemize}
 \end{quote}
 \section{The quantum numbers of the proton}
-\label{sec:org9ad9979}
+\label{sec:org14eb722}
 The quantum numbers of the proton are determined by the valence quarks, p=(uud).
 Given that PDFs are \emph{number densities} for the constituent partons, the following flavour sum rules hold:
 \begin{align}
@@ -128,7 +128,7 @@ b & -8.819432616746102e-05\\
 \end{tabular}
 \end{table}
 \section{Momentum sum rules}
-\label{sec:org81981f5}
+\label{sec:org6eeb58f}
 The parton \(a\) carries a momentum fraction \(x_a\) of the parent hadron, \(p_a^\mu=x_a\,P^\mu\).
 Therefore, the momentum density associated with that parton is given by \(x_a\,f_{a\vert H}(x_a)\).
 Since the sum over all parton momenta must sum back up to the parent hadron one, the PDF sets satisfy a \emph{momentum sum rule} (in \(\overline{\text{MS}}\)):
@@ -184,7 +184,41 @@ The up quark, with \(\sim20\%\), has the second largest contribution, followed b
 How robust are the numbers?
 \end{itemize}
 \end{quote}
-\section{Comparison of PDF sets}
-\label{sec:org07c577f}
-todo
+\section{Comparison of different PDF sets}
+\label{sec:org37162c2}
+In order to get a sense on how well these PDFs are constrained, it is useful to compare the PDF sets as determined by different groups.
+
+\begin{minted}[frame=lines,fontsize=\scriptsize]{python}
+import lhapdf
+import numpy as np
+
+lhapdf.setVerbosity(0)
+pdfs = [ lhapdf.mkPDF(pdf_name, 0) for pdf_name in ["PDF4LHC21_40", "CT18NNLO", "MSHT20nnlo_as118", "NNPDF40_nnlo_as_01180"] ]
+if qlog:
+    xs = [x for x in np.logspace(-5, 0, 50)]
+else:
+    xs = [x for x in np.linspace(0, 1, 50)]
+res = np.empty([len(xs),2+len(pdfs)])
+for ix, x in enumerate(xs):
+    res[ix,0] = x
+    res[ix,1] = q
+    for ip, pdf in enumerate(pdfs):
+        res[ix,2+ip] = pdf.xfxQ(a, x, q)
+return res.tolist()
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{pdf_PDFcomp.png}
+\label{}
+\end{center}
+
+Overall, the PDFs are determined at the level of a few percent in the intermediate \$x\$-range.
+
+\begin{quote}
+\begin{itemize}
+\item Try changing the parton type in the above plot.
+\item The PDF sets also come with error sets to determine the error of the PDF sets.
+Try to adjust the above script to add error bands for the indivudial PDFs.
+\end{itemize}
+\end{quote}
 \end{document}

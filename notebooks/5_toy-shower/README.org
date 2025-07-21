@@ -6,10 +6,10 @@
 
 
 * Introduction
-We will investigate the gluon-emission probability off quarks and gluons and use that to implement a *very* simplified parton shower (single final-state leg, only primary branching, leading double-log, only $k_T$ and not proper kinematics, ...).
+We will investigate the gluon-emission probability off quarks and gluons and use that to implement a *very* simplified parton shower (single final-state leg, only primary branching, double-log approximation, only $k_T$ and not proper kinematics, ...).
 
 * Emission probability and the Sudakov form factor
-In the leading double-log approximation (soft /and/ collinear emission), we have seen in the lecture that the emission probability is given as
+In the double-log approximation (soft /and/ collinear emission), we have seen in the lecture that the emission probability is given as
 \begin{align}
   \mathrm{d}\omega_{X\to X+g}
   &=
@@ -174,8 +174,6 @@ plot "data_q.dat" u 1:(1.0) smooth freq with boxes ls 1 t 'quark', \
 
 #+RESULTS:
 [[file:plotN.png]]
-
-
 
 
 #+BEGIN_QUOTE

@@ -173,7 +173,7 @@ Being differential in these two observables, we're left with no more integration
   \frac{\mathrm{d}^2\sigma_{A B \to \ell^+\ell^-}}{\mathrm{d}M_{\ell\ell}\mathrm{d}Y_{\ell\ell}}
   &=
   f_{a\vert A}(x_a) \; f_{b\vert B}(x_b) \; \frac{2\,M_{\ell\ell}}{E_\mathrm{cm}^2} \;
-  \hat{\sigma}_{ab\to\ell^+\ell^-l}(x_a P_A,\,x_b P_B)
+  \hat{\sigma}_{ab\to\ell^+\ell^-}(x_a P_A,\,x_b P_B)
   \;\bigg\vert_{x_{a/b}\equiv\tfrac{M_{\ell\ell}}{E_\mathrm{cm}}\mathrm{e}^{\pm Y_{\ell\ell}}}
 \end{align}
 
@@ -214,7 +214,7 @@ def diff_cross(Ecm: float, Mll: float, Yll: float, par=PARAM) -> float:
 
 ** Export source code
 We can export the python source code to a file =main.py=:
-#+begin_src python :noweb yes :tangle main.py :shebang "#!/usr/bin/env python3.10"
+#+begin_src python :noweb yes :tangle main.py :shebang "#!/usr/bin/env python"
 import lhapdf
 import math
 import cmath
@@ -240,7 +240,7 @@ by using the ~tangle~ command
 #+end_src
 
 ** Comparison to data
-There is a recent ATLAS measurement [[https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/CONFNOTES/ATLAS-CONF-2023-013/][ATLAS-CONF-2023-013]] that is inclusive in the lepton kinematics and thus suitable for performing a simple comparison here.
+There is an ATLAS measurement [[https://atlas.web.cern.ch/Atlas/GROUPS/PHYSICS/PAPERS/STDM-2018-05/][2309.09318]] that is inclusive in the lepton kinematics and thus suitable for performing a simple comparison here.
 Let's execute our code that we exported above and save the output to a file
 #+begin_src shell : :results silent
 ./main.py > DY.out
@@ -257,14 +257,14 @@ grep "^#total" DY.out
 #+end_src
 
 #+RESULTS:
-: #total 897.1018242299992 pb
+: #total 897.1018242299994 pb
 which is in the right ballpark.
 However, a quantitative assessment is more tricky since we don't have any uncertainty estimate on our theory predictions.
 For calculations in QCD, one should always consider a LO prediction to only provide an order-of-magnitude estimate for a cross section.
 
 We can also use the generated data to compare the rapidity distribution presented in the ATLAS paper.
-Unfortunately, this is still a conference note so there's no public data available on [[https://www.hepdata.net/][HEPData]].
-Fortunately, there are tools like [[https://arxiv.org/abs/0710.2896][EasyNData]] that allows us to extract data out of plots :)
+The paper is published and the associates data is available on [[https://www.hepdata.net/record/ins2698794][HEPData]].
+However, it appears that HEPData is missing the first rapidity bin ([0-0.4]) but we can also just use tools like [[https://arxiv.org/abs/0710.2896][EasyNData]] that allows us to extract data point out of plots :)
 The rapidity distribution with the relative errors is in the file =ATLAS.dat= and we can plot it against our prediction:
 #+begin_src gnuplot :file Yll.png
 reset
@@ -300,3 +300,37 @@ plot "< awk '$1~/^#Mll/{print $2,$3}' DY.out" u 1:2 w lp t 'LO'
 #+RESULTS:
 [[file:Mll.png]]
 We can see a similar picture of the photon pole and the Z-boson resonance as in the lepton collider example.
+
+** Higher-order predictions
+In the subfolder ~nlo~, you can find the corresponding implementation at NLO.
+The agreement with the data is significantly improved by including the next order.
+However, we also observe that the residual theory uncertainties are still larger by almost a factor of two compared to the data.
+
+#+begin_src gnuplot :file Yll_nlo.png
+reset
+set terminal pngcairo
+unset log x
+set xlabel '|Y_{ℓℓ}|'
+set xrange [0:3.6]
+unset log y
+set ylabel 'dσ / d|Y_{ℓℓ}| [pb]'
+set yrange [*:*]
+set style fill pattern 2
+#> factor two because of y_Z -> |Y_Z|
+plot "< awk '$1~/^#Yll/{$1=\"\"; print $0}' nlo/out_scl.txt"  \
+        u 1:($2+$4):($2+$5) w filledcurves ls 2 fs solid 0.25 t "LO",  \
+     "" u 1:2  w l ls 2 notitle,  \
+     "" u 1:($6+$8):($6+$9) w filledcurves ls 3 fs solid 0.25 t "NLO",  \
+     "" u 1:6  w l ls 3 notitle,  \
+     "< awk '$1!~/^#/{val=$3;low=$3*(1-$4*1e-2);upp=$3*(1+$4*1e-2);print ($1+$2)/2.,val,low,upp;}' ATLAS.dat" u 1:2:(($4-$3)/2.) w err ls 1 t "ATLAS"
+
+#+end_src
+
+#+RESULTS:
+[[file:Yll_nlo.png]]
+
+This prompts the inclusion of even the NNLO corrections for this process.
+The subfolder ~nnlojet~ contains the necessary input card for the [[https://nnlojet.hepforge.org/][NNLOJET]] Monte Carlo program to compute this process at NNLO.
+
+#+CAPTION: NNLO prediction using NNLOJET.
+[[./nnlojet/nnlojet_abs_yz.pdf]]

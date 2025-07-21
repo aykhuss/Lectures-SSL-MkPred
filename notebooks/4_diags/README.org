@@ -103,7 +103,6 @@ We can then fill this table for different gluon multiplicities at tree and 1-loo
 |     2 |                 4 |                 223 |
 |     3 |                25 |                2105 |
 |     4 |               220 |               25120 |
-|     5 |              2485 |              362510 |
 #+TBLFM: $2='(org-sbe "gluon_diags" (ngluons $1) (nloop 0))::$3='(org-sbe "gluon_diags" (ngluons $1) (nloop 1))
 We can appreciate the rapid increase in the number of diagrams as more legs or loops are added to the diagrams.
 Note that this only consitites a very naive estimate for the scaling of the complexity as each individual diagram further becomes more complicated to evalute, especially with each additional loop that involves and additional integration that must be performed.
@@ -129,7 +128,7 @@ import sympy
 g, t = sympy.symbols('g t')
 n_poly = g**3 * t
 n_legs = 3
-for i in range(10):
+for i in range(9):
     n_poly = sympy.diff(n_poly,g) * g**3 * t + sympy.diff(n_poly,t) * g
     n_legs += 1
     print("{}->{} gluon scattering has {} diagrams".format(2,n_legs-2,n_poly.subs([(g,1),(t,1)])))

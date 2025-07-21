@@ -9,7 +9,7 @@
 
  in= gluon, gluon ;
 
- out=  gluon, gluon, gluon, gluon, gluon ;
+ out=  gluon, gluon, gluon, gluon ;
 
  loops= 1 ;
 

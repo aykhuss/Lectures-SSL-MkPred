@@ -1,4 +1,4 @@
-% Created 2024-07-22 Mon 14:18
+% Created 2025-07-21 Mon 17:38
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
  pdftitle={Parton Showers},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 29.4 (Org mode 9.8)}, 
+ pdfcreator={Emacs 30.1 (Org mode 9.7.31)}, 
  pdflang={English}}
 \usepackage{biblatex}
 
@@ -33,11 +33,11 @@
 \tableofcontents
 
 \section{Introduction}
-\label{sec:orge786463}
-We will investigate the gluon-emission probability off quarks and gluons and use that to implement a \textbf{very} simplified parton shower (single final-state leg, only primary branching, leading double-log, only \(k_T\) and not proper kinematics, \ldots{}).
+\label{sec:org77ad8a9}
+We will investigate the gluon-emission probability off quarks and gluons and use that to implement a \textbf{very} simplified parton shower (single final-state leg, only primary branching, double-log approximation, only \(k_T\) and not proper kinematics, \ldots{}).
 \section{Emission probability and the Sudakov form factor}
-\label{sec:orgc582d33}
-In the leading double-log approximation (soft \emph{and} collinear emission), we have seen in the lecture that the emission probability is given as
+\label{sec:orgdd50fae}
+In the double-log approximation (soft \emph{and} collinear emission), we have seen in the lecture that the emission probability is given as
 \begin{align}
   \mathrm{d}\omega_{X\to X+g}
   &=
@@ -101,10 +101,10 @@ which now has the large logarithm in the exponent.
 This solution therefore accomplishes exactly what we wanted: sum up the problematic logarithms to all orders, and in doing so, tame the otherwise divergent behaviour (\(k_T\to0\)).
 It turns out that we can use the Sudakov form factor to sample successive emissions (it is a Markovian process), which we discuss in the next section together with a simple implementation.
 \section{Implementation}
-\label{sec:orgb795378}
+\label{sec:org0b46377}
 
 \subsection{Interlude: Sampling}
-\label{sec:org1de66de}
+\label{sec:org04e4f8a}
 Assume we have a uniform random number generator at our disposal sampling values in the range \(r\in[0,1]\).
 We wish to generate samples \(x_i\) drawn from a probability distribution \(p(x)\).
 In the so-called \emph{inversion method}, we use the fact that the \emph{cumulant} distribution, \(P(x) = \int_{-\infty}^x\mathrm{d}x' p(x')\), is a strictly monotonic function with values in \(P(x)\in[0,1]\) (it is a probability).
@@ -116,7 +116,7 @@ In such cases, one can also use the \emph{rejection method} (or ``hit-and-miss''
 If we can draw samples from \(\tilde{p}(x)\), all we need to do is to correct for the difference with respect to \(p(x)\).
 This can be accomplished by drawing another uniform random number \(s_i\in[0,1]\) and only accepting the point \(\tilde{x}_i\) generated with \(\tilde{p}(x)\) with the probability \(p(\tilde{x}_i)/\tilde{p}(\tilde{x}_i)\).
 \subsection{Our Toy Shower}
-\label{sec:org5a18597}
+\label{sec:orgb957bcc}
 With the Sudakov form factor in Eq. \eqref{eq:sud} at hand, we can easily iterate the sampling of emissions using the \emph{inversion method} described above given that the cumulant that corresponds to the probability for the \emph{next emission} is precisely the Sudakov.
 The steps of the shower are:
 \begin{enumerate}
@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 math.log(emissions[0] / kt_max)))
 \end{minted}
 \section{Playground}
-\label{sec:orgc094229}
+\label{sec:org67d0ed8}
 Let us use the implementation to generate some ``events''
 \begin{minted}[frame=lines,fontsize=\scriptsize]{shell}
 #> N, sum, log(sum), first, log(first)
@@ -211,8 +211,6 @@ This property can be exploited to try and discriminate between ``quark jets'' an
 \includegraphics[width=.9\linewidth]{plotN.png}
 \label{}
 \end{center}
-
-
 
 
 \begin{quote}

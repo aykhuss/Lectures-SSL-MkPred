@@ -41,10 +41,10 @@ for ix, x in enumerate(xs):
 return res.tolist()
 #+end_src
 
-#+begin_src gnuplot :var data=lhapdf_xfx(3,0) :var fac=1 :file pdf_xfx.png
+#+begin_src gnuplot :var data=lhapdf_xfx(100,1) :var fac=1 :file pdf_xfx.png
 reset
 set terminal pngcairo
-# set log x
+set log x
 set xlabel "x"
 set xrange [1e-5:1]
 unset log y
@@ -161,7 +161,8 @@ The up quark, with $\sim20\%$, has the second largest contribution, followed by 
   How robust are the numbers?
 #+end_quote
 
-* Comparison of PDF sets
+* Comparison of different PDF sets
+In order to get a sense on how well these PDFs are constrained, it is useful to compare the PDF sets as determined by different groups.
 
 #+NAME: lhapdf_PDFcomp
 #+HEADER: :var q=100 qlog=1 a=0
@@ -184,14 +185,14 @@ for ix, x in enumerate(xs):
 return res.tolist()
 #+end_src
 
-#+begin_src gnuplot :var data=lhapdf_PDFcomp(100,1,1) :file pdf_PDFcomp.png
+#+begin_src gnuplot :var data=lhapdf_PDFcomp(100,1,2) :file pdf_PDFcomp.png
 reset
 set terminal pngcairo
 set log x
 set xlabel "x"
-set xrange [1e-5:0.9]
+set xrange [1e-4:0.9]
 unset log y
-set yrange [0.5:1.5]
+set yrange [0.6:1.4]
 set ylabel "ratio to PDF4LHC"
 plot data  \
         u 1:(1.)    w lp t "PDF4LHC",  \
@@ -202,3 +203,11 @@ plot data  \
 
 #+RESULTS:
 [[file:pdf_PDFcomp.png]]
+
+Overall, the PDFs are determined at the level of a few percent in the intermediate $x$-range.
+
+#+begin_quote
+- Try changing the parton type in the above plot.
+- The PDF sets also come with error sets to determine the error of the PDF sets.
+  Try to adjust the above script to add error bands for the indivudial PDFs.
+#+end_quote
